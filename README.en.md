@@ -105,7 +105,7 @@ Overall UI upgrade
 ```
 
 ```
-V4_202307012：
+V4_20230712：
 1. [^] The classified bookkeeping function of the home page and the comparison function of last month are turned on, but it is still written dead. At present, this problem has been recorded in the problem log and has the highest priority in the to-do list. The next version will fix it.
 2.[+] The calendar function has been added, and the calendar can be added.
 ```
