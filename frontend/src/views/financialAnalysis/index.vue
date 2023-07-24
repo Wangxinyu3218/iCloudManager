@@ -3,17 +3,19 @@
     <el-card :bordered="true" :headStyle="{ fonWeight: 'bold;' }" class="card">
       <el-form v-model="form">
         <div class="oneTitle">
-          {{ "本月财务" }}<span class="twoTitle">{{ "(需每日手动更新)" }}</span>
+          {{ "本月财务" }}
           <el-popover placement="right" trigger="hover">
             <el-table :data="gridData">
               <el-table-column
-                align="center"
+                width="auto"
+                align="left"
                 property="info"
                 label="类型"
                 show-overflow-tooltip
               ></el-table-column>
               <el-table-column
-                align="center"
+                width="200px"
+                align="left"
                 property="des"
                 label="介绍"
                 show-overflow-tooltip
@@ -29,7 +31,7 @@
           </el-popover>
         </div>
         <el-row :gutter="24">
-          <el-col :span="4">
+          <el-col :span="6">
             <el-card
               :bordered="true"
               :headStyle="{ fonWeight: 'bold;' }"
@@ -44,11 +46,31 @@
                   <div class="bottomTitle">
                     {{ form.thisMonthAmount || "-" }}
                   </div>
+                  <div>
+                    <el-button
+                      v-if="amountUp"
+                      class="percentTitle"
+                      type="text"
+                      icon="el-icon-caret-top"
+                      size="small"
+                      style="color: #f56c6c"
+                      >{{ amountPrecent || "-" }}</el-button
+                    >
+                    <el-button
+                      v-if="amountDown"
+                      class="percentTitle"
+                      type="text"
+                      icon="el-icon-caret-bottom"
+                      size="small"
+                      style="color: #67c23a"
+                      >{{ amountPrecent || "-" }}</el-button
+                    >
+                  </div>
                 </el-col>
               </el-row>
             </el-card>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="6">
             <el-card
               :bordered="true"
               :headStyle="{ fonWeight: 'bold;' }"
@@ -63,11 +85,31 @@
                   <div class="bottomTitle">
                     {{ form.thisMonthEarn || "-" }}
                   </div>
+                  <div>
+                    <el-button
+                      class="percentTitle"
+                      v-if="earnUp"
+                      type="text"
+                      icon="el-icon-caret-top"
+                      size="small"
+                      style="color: #f56c6c"
+                      >{{ earnPrecent || "-" }}</el-button
+                    >
+                    <el-button
+                      class="percentTitle"
+                      v-if="earnDown"
+                      type="text"
+                      icon="el-icon-caret-bottom"
+                      size="small"
+                      style="color: #67c23a"
+                      >{{ earnPrecent || "-" }}</el-button
+                    >
+                  </div>
                 </el-col>
               </el-row>
             </el-card>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="6">
             <el-card
               :bordered="true"
               :headStyle="{ fonWeight: 'bold;' }"
@@ -354,9 +396,32 @@
                   />
                 </el-col>
                 <el-col :span="18">
-                  <div class="topTitle">可用余额</div>
+                  <div class="topTitle">支出额度</div>
                   <div class="bottomTitle">
                     {{ Allform.thisMonthEarn || "-" }}
+                  </div>
+                </el-col>
+              </el-row>
+            </el-card>
+          </el-col>
+          <el-col :span="4">
+            <el-card
+              :bordered="true"
+              :headStyle="{ fonWeight: 'bold;' }"
+              class="smallCard"
+            >
+              <el-row :gutter="24">
+                <el-col :span="6">
+                  <img class="pic" src="@/assets/yu'e.png" alt="" />
+                </el-col>
+                <el-col :span="18">
+                  <div class="topTitle">可用余额</div>
+                  <div class="bottomTitle">
+                    {{
+                      (Allform.thisMonthEarn - form.thisMonthAmount).toFixed(
+                        2
+                      ) || "-"
+                    }}
                   </div>
                 </el-col>
               </el-row>
@@ -475,6 +540,13 @@ export default {
       activeAmount: false,
       activeAll: false,
       title: null,
+      amountPrecent: null,
+      earnPrecent: null,
+      /* 上升下降 */
+      amountUp: false,
+      amountDown: false,
+      earnUp: false,
+      earnDown: false,
       /* 本月卡片 */
       thisMonthStartDate: "",
       thisMonthEndDate: "",
@@ -549,8 +621,6 @@ export default {
   created() {
     /* 挂载全部数据 */
     this.selectAll();
-    /* 挂载上月全部数据 */
-    this.selectLastAll();
     /* 挂载概览全部数据 */
     this.selectTotaoAll();
   },
@@ -596,7 +666,7 @@ export default {
       //获取当前时间
       let moment = require("moment");
       let date = new Date();
-      //获取当前月的第一天
+      /* //获取当前月的第一天----开始 */
       let monthStart = date.setDate(1);
       let firstDay = moment(monthStart).format("YYYY-MM-DD");
       this.thisMonthStartDate = firstDay;
@@ -609,23 +679,18 @@ export default {
       let lastDay = moment(nextMonthFirstDay - oneDay).format("YYYY-MM-DD");
       this.thisMonthEndDate = lastDay;
       // console.log(this.thisMonthEndDate, "本月最后一天");
-      let data = await this.$axios.get(
+      let data1 = await this.$axios.get(
         `/api/test/getThisMonthCount?startDate=${this.thisMonthStartDate}&createDate=${this.thisMonthEndDate}`
       );
-      this.form.thisMonthAmount = data.data.TMA[0].thisMonthAmount;
-      this.form.thisMonthEarn = data.data.TME[0].thisMonthEarn;
-      this.form.thisMonthAntCredit = data.data.TMAC[0].thisMonthAntCredit;
-      this.form.thisMonthYuxiaoer = data.data.TMY[0].thisMonthYuxiaoer;
-      this.form.thisMonthCar = data.data.TMC[0].thisMonthCar;
-      this.form.thisMonthFood = data.data.TMF[0].thisMonthFood;
-      this.form.thisMonthDeer = data.data.TMD[0].thisMonthDeer;
-    },
-    /* 挂载上月全部数据 */
-    async selectLastAll() {
-      //获取当前时间
-      let moment = require("moment");
-      let date = new Date();
-      //获取上月的最后一天
+      this.form.thisMonthAmount = data1.data.TMA[0].thisMonthAmount;
+      this.form.thisMonthEarn = data1.data.TME[0].thisMonthEarn;
+      this.form.thisMonthAntCredit = data1.data.TMAC[0].thisMonthAntCredit;
+      this.form.thisMonthYuxiaoer = data1.data.TMY[0].thisMonthYuxiaoer;
+      this.form.thisMonthCar = data1.data.TMC[0].thisMonthCar;
+      this.form.thisMonthFood = data1.data.TMF[0].thisMonthFood;
+      this.form.thisMonthDeer = data1.data.TMD[0].thisMonthDeer;
+      /* //获取当前月的第一天----结束 */
+      /* //获取上月的最后一天----开始 */
       let lcurrentMonth = date.getMonth() - 1;
       let lnextMonth = ++lcurrentMonth;
       let lnextMonthFirstDay = new Date(date.getFullYear(), lnextMonth, 1);
@@ -643,15 +708,40 @@ export default {
       );
       this.LastMonthStartDate = lllastDay;
       // console.log(this.LastMonthStartDate, "上月第一天");
-      let data = await this.$axios.get(
+      let data2 = await this.$axios.get(
         `/api/test/getLastMonthCount?startDate=${this.LastMonthStartDate}&createDate=${this.LastMonthEndDate}`
       );
-      this.Lastform.thisMonthAmount = data.data.LMA[0].thisMonthAmount;
-      this.Lastform.thisMonthEarn = data.data.LME[0].thisMonthEarn;
-      this.Lastform.thisMonthYuxiaoer = data.data.LMY[0].thisMonthYuxiaoer;
-      this.Lastform.thisMonthCar = data.data.LMC[0].thisMonthCar;
-      this.Lastform.thisMonthAntCredit = data.data.LMAC[0].thisMonthAntCredit;
-      this.Lastform.thisMonthFood = data.data.LMF[0].thisMonthFood;
+      this.Lastform.thisMonthAmount = data2.data.LMA[0].thisMonthAmount;
+      this.Lastform.thisMonthEarn = data2.data.LME[0].thisMonthEarn;
+      this.Lastform.thisMonthYuxiaoer = data2.data.LMY[0].thisMonthYuxiaoer;
+      this.Lastform.thisMonthCar = data2.data.LMC[0].thisMonthCar;
+      this.Lastform.thisMonthAntCredit = data2.data.LMAC[0].thisMonthAntCredit;
+      this.Lastform.thisMonthFood = data2.data.LMF[0].thisMonthFood;
+      /* //获取上月的最后一天----结束 */
+      /* // 计算百分比----开始 */
+      let a = Number(this.form.thisMonthAmount);
+      let b = Number(this.Lastform.thisMonthAmount);
+      let d = Number(this.form.thisMonthEarn);
+      let e = Number(this.Lastform.thisMonthEarn);
+      if (a < b) {
+        let c = ((a - b) / b) * 100;
+        this.amountPrecent = c.toFixed(2) + "%";
+        this.amountDown = true;
+      } else {
+        let c = ((a - b) / b) * 100;
+        this.amountPrecent = Math.abs(c).toFixed(2) + "%";
+        this.amountUp = true;
+      }
+      if (d < e) {
+        let f = ((d - e) / e) * 100;
+        this.earnPrecent = f.toFixed(2) + "%";
+        this.earnDown = true;
+      } else {
+        let f = ((d - e) / e) * 100;
+        this.earnPrecent = Math.abs(f).toFixed(2) + "%";
+        this.earnUp = true;
+      }
+      /* // 计算百分比----结束 */
     },
     /* 挂载概览全部数据 */
     async selectTotaoAll() {
@@ -766,6 +856,13 @@ export default {
   text-align: center;
   font-size: 13px;
   font-weight: bold;
+}
+.percentTitle {
+  margin-left: 30px;
+  margin-top: -5px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bolder;
 }
 .oneTitle {
   font-weight: bold;

@@ -35,9 +35,9 @@
               >
                 <el-option
                   v-for="item in payWayList"
-                  :key="item.payWay"
-                  :label="item.payWayLabel"
-                  :value="item.payWay"
+                  :key="item.way_number"
+                  :label="item.way_content"
+                  :value="item.way_number"
                 >
                 </el-option>
               </el-select>
@@ -53,9 +53,9 @@
               >
                 <el-option
                   v-for="item in payTypeList"
-                  :key="item.payType"
-                  :label="item.payTypeLabel"
-                  :value="item.payType"
+                  :key="item.type_number"
+                  :label="item.type_content"
+                  :value="item.type_number"
                 >
                 </el-option>
               </el-select>
@@ -123,30 +123,8 @@
           :index="indexMethod"
         />
         <el-table-column prop="item" label="内容" align="left" />
-        <el-table-column label="支出方式" align="center">
-          <template slot-scope="scope">
-            <span v-if="scope.row.payWay == '0'"> {{ "花呗" }}</span>
-            <span v-else-if="scope.row.payWay == '1'">{{ "工行卡" }}</span>
-            <span v-else-if="scope.row.payWay == '2'">{{ "招行卡" }}</span>
-            <span v-else-if="scope.row.payWay == '3'">{{ "农行卡" }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="支出类型" align="left">
-          <template slot-scope="scope">
-            <span v-if="scope.row.payType == '0'">{{ "房租水电" }}</span>
-            <span v-else-if="scope.row.payType == '1'">{{ "买菜" }}</span>
-            <span v-else-if="scope.row.payType == '2'">{{ "零食" }}</span>
-            <span v-else-if="scope.row.payType == '3'">{{ "交通" }}</span>
-            <span v-else-if="scope.row.payType == '4'">{{ "还款" }}</span>
-            <span v-else-if="scope.row.payType == '5'">{{ "人情礼品" }}</span>
-            <span v-else-if="scope.row.payType == '6'" style="color: #d9001b">{{
-              "收入"
-            }}</span>
-            <span v-else-if="scope.row.payType == '8'">{{ "餐饮" }}</span>
-            <span v-else-if="scope.row.payType == '9'">{{ "流水" }}</span>
-            <span v-else-if="scope.row.payType == '7'">{{ "其他" }}</span>
-          </template></el-table-column
-        >
+        <el-table-column prop="way_content" label="支出方式" align="center" />
+        <el-table-column prop="type_content" label="支出类型" align="left" />
         <el-table-column label="金额" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.amount + "元" }}</span>
@@ -211,9 +189,9 @@
           >
             <el-option
               v-for="item in payWayList"
-              :key="item.payWay"
-              :label="item.payWayLabel"
-              :value="item.payWay"
+              :key="item.way_number"
+              :label="item.way_content"
+              :value="item.way_number"
             >
             </el-option>
           </el-select>
@@ -226,9 +204,9 @@
           >
             <el-option
               v-for="item in payTypeList"
-              :key="item.payType"
-              :label="item.payTypeLabel"
-              :value="item.payType"
+              :key="item.type_number"
+              :label="item.type_content"
+              :value="item.type_number"
             >
             </el-option>
           </el-select>
@@ -340,67 +318,9 @@ export default {
         ],
       },
       /* 支出方式选项 */
-      payWayList: [
-        {
-          payWay: 0,
-          payWayLabel: "花呗",
-        },
-        {
-          payWay: 1,
-          payWayLabel: "工行卡",
-        },
-        {
-          payWay: 2,
-          payWayLabel: "招行卡",
-        },
-        {
-          payWay: 3,
-          payWayLabel: "农行卡",
-        },
-      ],
+      payWayList: [],
       /* 支出类型选项 */
-      payTypeList: [
-        {
-          payType: 0,
-          payTypeLabel: "房租水电",
-        },
-        {
-          payType: 1,
-          payTypeLabel: "买菜",
-        },
-        {
-          payType: 2,
-          payTypeLabel: "零食",
-        },
-        {
-          payType: 3,
-          payTypeLabel: "交通",
-        },
-        {
-          payType: 4,
-          payTypeLabel: "还款",
-        },
-        {
-          payType: 5,
-          payTypeLabel: "人情礼品",
-        },
-        {
-          payType: 6,
-          payTypeLabel: "收入",
-        },
-        {
-          payType: 8,
-          payTypeLabel: "餐饮",
-        },
-        {
-          payType: 9,
-          payTypeLabel: "流水",
-        },
-        {
-          payType: 7,
-          payTypeLabel: "其他",
-        },
-      ],
+      payTypeList: [],
     };
   },
   created() {
@@ -410,6 +330,8 @@ export default {
     this.selectTotal();
     /* 获取当月1号 */
     this.setTimeFun();
+    /* 获取字典值 */
+    this.selectOptions();
   },
   methods: {
     /* 排序 */
@@ -422,6 +344,13 @@ export default {
         `/api/test/selectAll?page=${this.queryParams.page}&pageSize=${this.queryParams.pageSize}`
       );
       this.tableData = data.data || [];
+    },
+    /* 获取字典值 */
+    async selectOptions() {
+      let way_data = await this.$axios.get(`/api/test/selectWay`);
+      let type_data = await this.$axios.get(`/api/test/selectType`);
+      this.payWayList = way_data.data || [];
+      this.payTypeList = type_data.data || [];
     },
     /* 获取分页 */
     async selectTotal() {

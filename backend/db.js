@@ -4,7 +4,7 @@ var pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '123456',
-    database: 'account_v1'
+    database: 'account_v2'
 });
 function query(sql) {
     return new Promise((resolve, reject) => {

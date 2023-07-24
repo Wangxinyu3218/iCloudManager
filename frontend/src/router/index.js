@@ -5,6 +5,7 @@ import Router from "vue-router";
 import Layout from "@/components/Layout";
 import financialAnalysis from "@/views/financialAnalysis";
 import expenditureStatistics from "@/views/expenditureStatistics";
+import dict from "@/views/dict";
 import login from "@/views/login";
 Vue.use(Router);
 
@@ -51,6 +52,17 @@ export default new Router({
           path: "/", // 等价于 /expenditureStatistics/,请求 /expenditureStatistics 时会在后面拼接个 / 因为AppNavbar下的index.vue写的是/expenditureStatistics/
           component: expenditureStatistics,
           meta: { title: "支出统计" },
+        },
+      ],
+    },
+    {
+      path: "/dict",
+      component: Layout,
+      children: [
+        {
+          path: "/", // 等价于 /expenditureStatistics/,请求 /expenditureStatistics 时会在后面拼接个 / 因为AppNavbar下的index.vue写的是/expenditureStatistics/
+          component: dict,
+          meta: { title: "字典配置" },
         },
       ],
     },

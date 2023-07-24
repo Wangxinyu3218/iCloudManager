@@ -19,14 +19,18 @@
         <span slot="title">财务分析</span>
       </el-menu-item>
       <!-- 会员管理 index下的左右 / 别忘记-->
-      <el-menu-item index="/expenditureStatistics/">
+      <el-menu-item index="/expenditureStatistics">
         <i class="el-icon-s-custom"></i>
         <span slot="title">支出统计</span>
+      </el-menu-item>
+      <!-- 字典 index下的左右 / 别忘记-->
+      <el-menu-item index="/dict">
+        <i class="el-icon-notebook-2"></i>
+        <span slot="title">字典配置</span>
       </el-menu-item>
     </el-menu>
   </div>
 </template>
-
 
 <style scoped>
 /* 去掉右边框 */

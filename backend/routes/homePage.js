@@ -6,103 +6,103 @@ router.get("/", (ctx) => {
   ctx.body = "this is a expenditureStatistics response!";
 });
 
-/* 查询所有数据 */
-router.get("/selectAll", async (ctx) => {
-  let { page, pageSize } = ctx.request.query;
-  let sql = `select * from expenditureStatistics order by createDate desc limit  ${
-    (page - 1) * pageSize
-  }, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 查询所有数据 */
+// router.get("/selectAll", async (ctx) => {
+//   let { page, pageSize } = ctx.request.query;
+//   let sql = `select * from expenditureStatistics order by createDate desc limit  ${
+//     (page - 1) * pageSize
+//   }, ${pageSize}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 查询总条数 */
-router.get("/selectCounts", async (ctx) => {
-  let {} = ctx.request.query;
-  let sql = `SELECT COUNT(*) as total FROM expenditureStatistics`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 查询总条数 */
+// router.get("/selectCounts", async (ctx) => {
+//   let {} = ctx.request.query;
+//   let sql = `SELECT COUNT(*) as total FROM expenditureStatistics`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 根据内容查询列表 */
-router.get("/selectItem", async (ctx) => {
-  let { page, pageSize, item } = ctx.request.query;
-  let sql = `select * from expenditureStatistics where item like '${item}%' order by createDate desc  limit  ${
-    (page - 1) * pageSize
-  }, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 根据内容查询列表 */
+// router.get("/selectItem", async (ctx) => {
+//   let { page, pageSize, item } = ctx.request.query;
+//   let sql = `select * from expenditureStatistics where item like '${item}%' order by createDate desc  limit  ${
+//     (page - 1) * pageSize
+//   }, ${pageSize}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 根据支出方式查询列表 */
-router.get("/selectPayWay", async (ctx) => {
-  let { page, pageSize, payWay } = ctx.request.query;
-  let sql = `select * from expenditureStatistics where payWay = ${payWay} order by createDate desc  limit  ${
-    (page - 1) * pageSize
-  }, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 根据支出方式查询列表 */
+// router.get("/selectPayWay", async (ctx) => {
+//   let { page, pageSize, payWay } = ctx.request.query;
+//   let sql = `select * from expenditureStatistics where payWay = ${payWay} order by createDate desc  limit  ${
+//     (page - 1) * pageSize
+//   }, ${pageSize}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 根据支出类型查询列表 */
-router.get("/selectPayType", async (ctx) => {
-  let { page, pageSize, payType } = ctx.request.query;
-  let sql = `select * from expenditureStatistics where payType = ${payType} order by createDate desc  limit  ${
-    (page - 1) * pageSize
-  }, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 根据支出类型查询列表 */
+// router.get("/selectPayType", async (ctx) => {
+//   let { page, pageSize, payType } = ctx.request.query;
+//   let sql = `select * from expenditureStatistics where payType = ${payType} order by createDate desc  limit  ${
+//     (page - 1) * pageSize
+//   }, ${pageSize}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 根据创建日期查询列表 */
-router.get("/selectCreateDate", async (ctx) => {
-  let { page, pageSize, createDate } = ctx.request.query;
-  let sql = `select * from expenditureStatistics where createDate = '${createDate}' order by createDate desc  limit  ${
-    (page - 1) * pageSize
-  }, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 根据创建日期查询列表 */
+// router.get("/selectCreateDate", async (ctx) => {
+//   let { page, pageSize, createDate } = ctx.request.query;
+//   let sql = `select * from expenditureStatistics where createDate = '${createDate}' order by createDate desc  limit  ${
+//     (page - 1) * pageSize
+//   }, ${pageSize}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 根据id查询详细信息 */
-router.get("/selectId", async (ctx) => {
-  let { id } = ctx.request.query;
-  let sql = `select * from expenditureStatistics where id = ${id}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 根据id查询详细信息 */
+// router.get("/selectId", async (ctx) => {
+//   let { id } = ctx.request.query;
+//   let sql = `select * from expenditureStatistics where id = ${id}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 根据id删除数据 */
-router.post("/deleteId", async (ctx) => {
-  // 硬删除
-  let { id } = ctx.request.body;
-  let sql = `DELETE FROM expenditureStatistics WHERE id = ${id}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-  // 软删除
-  // let { username, del } = ctx.request.body;
-  // let sql = `update expenditureStatistics set del='${del}' where username='${username}'`
-  // let data = await db.query(sql);
-  // ctx.body = data;
-});
+// /* 根据id删除数据 */
+// router.post("/deleteId", async (ctx) => {
+//   // 硬删除
+//   let { id } = ctx.request.body;
+//   let sql = `DELETE FROM expenditureStatistics WHERE id = ${id}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+//   // 软删除
+//   // let { username, del } = ctx.request.body;
+//   // let sql = `update expenditureStatistics set del='${del}' where username='${username}'`
+//   // let data = await db.query(sql);
+//   // ctx.body = data;
+// });
 
-/* 添加数据 */
-router.post("/addItem", async (ctx) => {
-  let { item, payWay, payType, amount, startDate, createDate } =
-    ctx.request.body;
-  let sql = `insert into expenditureStatistics(item,payWay,payType,amount,startDate,createDate) values ('${item}',${payWay},${payType},${amount},'${startDate}','${createDate}')`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 添加数据 */
+// router.post("/addItem", async (ctx) => {
+//   let { item, payWay, payType, amount, startDate, createDate } =
+//     ctx.request.body;
+//   let sql = `insert into expenditureStatistics(item,payWay,payType,amount,startDate,createDate) values ('${item}',${payWay},${payType},${amount},'${startDate}','${createDate}')`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
-/* 修改数据 */
-router.post("/updateItem", async (ctx) => {
-  let { id, item, payWay, payType, amount, startDate, createDate } =
-    ctx.request.body;
-  let sql = `update expenditureStatistics set item='${item}',payWay=${payWay},payType=${payType},amount=${amount},startDate='${startDate}',createDate='${createDate}' where id=${id}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
+// /* 修改数据 */
+// router.post("/updateItem", async (ctx) => {
+//   let { id, item, payWay, payType, amount, startDate, createDate } =
+//     ctx.request.body;
+//   let sql = `update expenditureStatistics set item='${item}',payWay=${payWay},payType=${payType},amount=${amount},startDate='${startDate}',createDate='${createDate}' where id=${id}`;
+//   let data = await db.query(sql);
+//   ctx.body = data;
+// });
 
 /* 查询卡片(本月) */
 router.get("/getThisMonthCount", async (ctx) => {
@@ -181,11 +181,4 @@ router.post("/updateInstalmentCredit", async (ctx) => {
   ctx.body = data;
 });
 
-/* 登录 */
-router.post("/login", async (ctx) => {
-  let { username } = ctx.request.body;
-  let sql = `select * from user where isUse = 0 AND username = '${username}'`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
 module.exports = router;
