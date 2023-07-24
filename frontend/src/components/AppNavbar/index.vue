@@ -34,6 +34,10 @@
         <i class="el-icon-document"></i>
         <span slot="title" style="font-weight: bold">Bookkeeping</span>
       </el-menu-item>
+      <el-menu-item index="/calendar">
+        <i class="el-icon-date"></i>
+        <span slot="title" style="font-weight: bold">Calendar</span>
+      </el-menu-item>
       <el-menu-item index="/dict">
         <i class="el-icon-edit-outline"></i>
         <span slot="title" style="font-weight: bold">Dict</span>

@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 127.0.0.1
+ Source Server         : local
  Source Server Type    : MySQL
  Source Server Version : 50728
  Source Host           : localhost:3306
- Source Schema         : bookkeeping_v3
+ Source Schema         : bookkeeping
 
  Target Server Type    : MySQL
  Target Server Version : 50728
  File Encoding         : 65001
 
- Date: 24/07/2023 16:40:02
+ Date: 21/06/2023 11:34:30
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `bookkeeping_dashboard` (
 -- Records of bookkeeping_dashboard
 -- ----------------------------
 BEGIN;
-INSERT INTO `bookkeeping_dashboard` (`depend_id`, `bk_residue`, `bk_limit`) VALUES (825901, '1000', '100');
+INSERT INTO `bookkeeping_dashboard` (`depend_id`, `bk_residue`, `bk_limit`) VALUES (825901, '10000', '100');
 COMMIT;
 
 -- ----------------------------
@@ -59,16 +59,16 @@ CREATE TABLE `bookkeeping_dashboard_list` (
 -- Records of bookkeeping_dashboard_list
 -- ----------------------------
 BEGIN;
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 1, 546963, 'income', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 2, 600856, 'living', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 3, 659537, 'vegetables&fruits', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 4, 386515, 'food', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 5, 189267, 'snack', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 6, 786789, 'traffic', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 7, 366144, 'Credit', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 8, 470356, 'shopping', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 9, 253347, 'deer', NULL, '2023-06');
-INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 10, 855669, 'other', NULL, '2023-06');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 1, 546963, 'income', '1', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 2, 600856, 'living', '2', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 3, 659537, 'vegetables&fruits', '3', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 4, 386515, 'food', '4', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 5, 189267, 'snack', '5', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 6, 786789, 'traffic', '6', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 7, 366144, 'Credit', '7', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 8, 470356, 'shopping', '8', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 9, 253347, 'deer', '20', '2023-05');
+INSERT INTO `bookkeeping_dashboard_list` (`bk_id`, `sort_id`, `expenditure_type`, `list_name`, `list_amount`, `list_date`) VALUES (825901, 10, 855669, 'other', '10', '2023-05');
 COMMIT;
 
 -- ----------------------------
@@ -203,7 +203,7 @@ CREATE TABLE `bookkeeping_user` (
 -- Records of bookkeeping_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `bookkeeping_user` (`user_id`, `user_state`, `user_name`, `nick_name`, `user_password`) VALUES (825901, 0, 'zhangxiaolu', 'Hsielu Chang', '123456');
+INSERT INTO `bookkeeping_user` (`user_id`, `user_state`, `user_name`, `nick_name`, `user_password`) VALUES (825901, 0, 'zhangxiaolu', 'HiseHlu Chang', '123456');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

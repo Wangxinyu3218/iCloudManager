@@ -12,6 +12,7 @@ const list = require("./routes/list");
 const login = require("./routes/login");
 const method = require("./routes/method");
 const type = require("./routes/type");
+const calendar = require("./routes/calendar");
 // error handler
 onerror(app);
 const hostName = "localhost"; //IP
@@ -49,6 +50,7 @@ app.use(list.routes(), list.allowedMethods());
 app.use(login.routes(), login.allowedMethods());
 app.use(method.routes(), method.allowedMethods());
 app.use(type.routes(), type.allowedMethods());
+app.use(calendar.routes(), calendar.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

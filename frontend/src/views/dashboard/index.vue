@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-    <div class="middle" v-show="false">
+    <div class="middle" v-show="isShow">
       <div class="expenses">
         <div class="expense-title-list">
           <div class="expense-title">Expense</div>
@@ -287,6 +287,7 @@ import {
 export default {
   data() {
     return {
+      isShow: true,
       total: 0,
       title: null,
       overview: false,
@@ -383,10 +384,14 @@ export default {
     };
   },
   created() {
-    if (this.$store.state.user_id == null) {
-      this.$message.error("登录失效请重新登录");
-      this.$router.push("/");
+    // if (this.$store.state.user_id == null) {
+    //   this.$message.error("登录失效请重新登录");
+    //   this.$router.push("/");
+    // }
+    if (this.$store.state.user_id != 825901) {
+      this.isShow = false;
     }
+    console.log(this.$store.state.user_id);
     this.getDashboard();
     this.countLastDashboard();
     this.getLastDashboard();

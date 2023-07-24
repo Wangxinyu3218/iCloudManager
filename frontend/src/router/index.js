@@ -8,6 +8,7 @@ import bookkeeping from "@/views/bookkeeping";
 import dict from "@/views/dict";
 import login from "@/views/login";
 import user from "@/views/user";
+import calendar from "@/views/calendar";
 Vue.use(Router);
 
 export default new Router({
@@ -36,6 +37,17 @@ export default new Router({
           path: "/",
           component: bookkeeping,
           meta: { title: "bookkeeping" },
+        },
+      ],
+    },
+    {
+      path: "/calendar",
+      component: Layout,
+      children: [
+        {
+          path: "/",
+          component: calendar,
+          meta: { title: "calendar" },
         },
       ],
     },

@@ -184,7 +184,8 @@
           <el-input
             v-model="activeAddForm.expenditure_amount"
             placeholder="Pleae enter amount..."
-            type="amount"
+            type="number"
+            min="0"
           ></el-input>
         </el-form-item>
         <el-form-item label="date：" prop="createDate">
