@@ -1,166 +1,154 @@
 <template>
   <div id="login">
-    <!-- 这是登录页 -->
-    <div class="login">
-      <div>
-        <h2>Arco 个人财会平台</h2>
-        <img class="img_left" src="@/assets/images/login.png" alt="" />
-      </div>
-      <div class="right_box">
-        <img
-          class="img_right"
-          src="@/assets/images/renyuanrenzheng.png"
-          alt=""
-        />
-        <el-form class="demo-form-inline" label-position="right">
-          <el-form-item>
-            <el-input
-              class="inputt"
-              placeholder="请输入账号"
-              v-model="shyh_sjh"
-            >
-              <i
-                slot="prefix"
-                style="display: flex; align-items: center; margin: 10px 0 0 0"
-              >
-                <img
-                  style="width: 20px; height: 20px"
-                  src="@/assets/images/yonghu-fuben.png"
-                  alt
+    <div class="login-block">
+      <div class="block-title">Welcome To PWMS!</div>
+      <div class="bigbox">
+        <div class="block-font">
+          <el-form :inline="true" label-width="80px">
+            <div class="block-username">
+              <el-form-item
+                ><span class="user-name">account:</span>
+                <el-input placeholder="请输入账号" v-model="user_name" />
+              </el-form-item>
+            </div>
+            <div class="block-password">
+              <el-form-item>
+                <span class="user-name">password:</span>
+                <el-input
+                  placeholder="请输入密码"
+                  v-model="user_password"
+                  show-password
+                  minlength="6"
                 />
-              </i>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item>
-            <el-input
-              class="inputt"
-              placeholder="请输入密码"
-              v-model="shyh_mm"
-              show-password
-              minlength="6"
-            >
-              <i
-                slot="prefix"
-                style="display: flex; align-items: center; margin: 10px 0 0 0"
-              >
-                <img
-                  style="width: 20px; height: 20px"
-                  src="@/assets/images/password.png"
-                  alt
-                />
-              </i>
-            </el-input>
-          </el-form-item>
-          <div class="button">
-            <el-button type="primary" @click="denglu">登录</el-button>
-          </div>
-        </el-form>
+              </el-form-item>
+            </div>
+          </el-form>
+        </div>
+        <div class="block-image">
+          <img
+            class="img"
+            :style="{
+              transform: 'rotate(' + rotateDegree + 'deg)',
+            }"
+            src="@/assets/coins.png"
+            @click="denglu"
+          />
+        </div>
       </div>
     </div>
-    <div class="btm_bq">天津星与火餐饮有限公司2020-2023</div>
+    <div class="btm_bq">
+      © All Rights Reserved 2023 · Star & Deer Tianjin Ltd
+    </div>
   </div>
 </template>
 <script>
+import { login } from "@/api/login";
 export default {
   data() {
     return {
-      shyh_sjh: "",
-      shyh_mm: "",
-      dqlist: [
-        {
-          dq_jc: 0,
-          dq_mc: "黄金糕",
-        },
-      ],
-      dq_jc: "",
-      loading: null,
+      user_name: null,
+      user_password: null,
+      rotateDegree: 0,
     };
   },
-  //路由守卫，路由改变时关闭遮罩层
-  beforeRouteUpdate(to, from, next) {
-    console.log("87788");
-    this.loading.close();
-    next();
-  },
-  activated() {},
-  watch: {},
-  created() {},
-  mounted() {
-    // this.getDq();
-    // this.setDq();
-    // this.isLogin();
+  created() {
+    window.addEventListener("resize", function () {
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      if (width < 1293) {
+        window.location.href = "/error.html";
+      }
+    });
   },
   methods: {
-    async getDq() {
-      var dqlist = [];
-      try {
-        dqlist = await this.postAxiosCatch("resource/listDq", {
-          baseUrl: "https://qb.cibroad.com/",
+    denglu() {
+      this.rotateDegree += 360;
+      setTimeout(() => {
+        const temp = {
+          user_name: this.user_name,
+          user_password: this.user_password,
+        };
+        login(temp).then((res) => {
+          if (res.user_id != null) {
+            this.$store.state.user_id = res.user_id;
+            this.$store.state.nick_name = res.nick_name;
+            this.$message.success(res.msg);
+            this.$router.push("/dashboard");
+          } else {
+            this.$message.error(res.msg);
+          }
         });
-        console.log(dqlist, "dqlist");
-        this.dqlist = dqlist.data;
-        // this.dq_bm = dqlist.data[0].dq_bm;
-      } catch (e) {
-        console.log(e, "catch");
-      }
-    },
-    isLogin() {
-      var authorization = localStorage.getItem("authorization");
-      console.log(authorization, "authorization");
-      if (authorization) {
-        this.$router.push("/financialAnalysis");
-      }
-    },
-    async denglu() {
-      // this.postAxios("shd/login/loginBySjhAndPass", {
-      //   shyh_sjh: this.shyh_sjh,
-      //   shyh_mm: this.shyh_mm,
-      // }).then((res) => {
-      //   this.loading = this.$loading({
-      //     lock: true,
-      //     text: "登录中",
-      //     spinner: "el-icon-loading",
-      //     background: "#333333",
-      //   });
-      const temp = {
-        username: this.shyh_sjh,
-      };
-      let data = await this.$axios.post(`/api/test/login`, temp);
-      if (data.data[0] == null) {
-        this.$message.error("用户名不存在");
-      } else if (this.shyh_mm != data.data[0].password) {
-        this.$message.error("用户名或密码错误");
-      } else if (this.shyh_mm == data.data[0].password) {
-        this.$message.success("登录成功");
-        this.$router.push("/financialAnalysis");
-      }
-    },
-    setDq() {
-      console.log("1111");
-      localStorage.setItem("shdregion", this.dq_jc);
+      }, 1500); // 延迟1秒执行
     },
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 input {
   border: none;
 }
 #login {
-  // min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
-  justify-content: center;
+  // display: flex;
+  // justify-content: center;
   align-items: center;
-  background-image: url(@/assets/images/bg.jpg);
+  background-image: url(@/assets/bg5.png);
   background-repeat: no-repeat;
   background-size: cover;
   overflow: hidden;
+  .login-block {
+    margin-top: 15%;
+    margin-left: 5%;
+    // border-style: solid;
+    width: 40%;
+    height: 50%;
+    .block-title {
+      // margin-top: 5%;
+      // margin-left: 5%;
+      font-size: 50px;
+      font-weight: bold;
+      // border-style: solid;
+      width: 100%;
+      height: 20%;
+    }
+    .bigbox {
+      display: flex;
+      .block-font {
+        // border-style: solid;
+        width: 45%;
+        height: 100%;
+        .block-username {
+          margin-top: 5%;
+          width: 100%;
+          height: 20%;
+          // border-style: solid;
+        }
+        .block-password {
+          margin-top: 5%;
+          width: 100%;
+          height: 20%;
+          // border-style: solid;
+        }
+      }
+      .block-image {
+        margin-left: 2%;
+        margin-top: 3%;
+        // border-style: solid;
+        width: 30%;
+        background-repeat: no-repeat;
+        // background-image: url("@/assets/coins.png");
+        .img {
+          width: 100%;
+          height: 100%;
+          transition: transform 1s ease-in-out;
+        }
+      }
+    }
+  }
   .login {
     background-color: #fff;
     border-radius: 15px;
@@ -193,8 +181,10 @@ input {
         background: #fff;
       }
       .img_right {
-        width: 64px;
-        height: 64px;
+        width: 114px;
+        height: 114px;
+        border-radius: 50%;
+        background-image: url("@/assets/images/renyuanrenzheng.png");
         .el-form-item {
           margin-bottom: 15px;
         }
@@ -221,7 +211,13 @@ input {
     text-align: center;
     margin-left: -300px;
     bottom: 50px;
-    color: #fff;
+    color: #190202;
   }
+}
+.user-name {
+  color: #190202;
+  font-size: 22px;
+  font-family: serif;
+  font-style: italic;
 }
 </style>

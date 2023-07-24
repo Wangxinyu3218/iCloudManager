@@ -6,14 +6,12 @@ const onerror = require("koa-onerror");
 const bodyparser = require("koa-bodyparser");
 const logger = require("koa-logger");
 
-const index = require("./routes/index");
-const users = require("./routes/users");
-const login = require("./routes/login");
 const homePage = require("./routes/homePage");
+const index = require("./routes/index");
 const list = require("./routes/list");
-const pay_way = require("./routes/pay_way");
-const pay_type = require("./routes/pay_type");
-
+const login = require("./routes/login");
+const method = require("./routes/method");
+const type = require("./routes/type");
 // error handler
 onerror(app);
 const hostName = "localhost"; //IP
@@ -45,13 +43,12 @@ app.use(async (ctx, next) => {
 });
 
 // routes
-app.use(index.routes(), index.allowedMethods());
-app.use(users.routes(), users.allowedMethods());
-app.use(login.routes(), login.allowedMethods());
 app.use(homePage.routes(), homePage.allowedMethods());
+app.use(index.routes(), index.allowedMethods());
 app.use(list.routes(), list.allowedMethods());
-app.use(pay_way.routes(), pay_way.allowedMethods());
-app.use(pay_type.routes(), pay_type.allowedMethods());
+app.use(login.routes(), login.allowedMethods());
+app.use(method.routes(), method.allowedMethods());
+app.use(type.routes(), type.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

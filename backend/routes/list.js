@@ -1,96 +1,83 @@
 const router = require("koa-router")();
 const json = require("koa-json");
 const db = require("../db.js");
-router.prefix("/test");
+router.prefix("/bookkeeping");
 router.get("/", (ctx) => {
-  ctx.body = "this is a expenditureStatistics response!";
+  ctx.body = "this is a expenditureList response!";
 });
-
 const selectSql =
-  `SELECT t.*, t1.type_content, t2.way_content FROM expenditurestatistics t LEFT JOIN payType t1 ON t.payType = t1.type_number LEFT JOIN payWay t2 ON t.payWay = t2.way_number` +
+  `SELECT t.*, t1.type_content, t2.method_content FROM bookkeeping_list t LEFT JOIN bookkeeping_type t1 ON t.expenditure_type = t1.type_id LEFT JOIN bookkeeping_method t2 ON t.expenditure_method = t2.method_id` +
   ` `;
-const orderSql = ` ` + `order by id desc` + ` `;
+const orderSql = ` ` + `order by createDate desc` + ` `;
 
-/* 查询所有数据 */
 router.get("/selectAll", async (ctx) => {
-  let { page, pageSize } = ctx.request.query;
-  let sql =
-    selectSql + orderSql + `limit  ${(page - 1) * pageSize}, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
+  let msg = "success";
+  let { page, pageSize, bk_id } = ctx.request.query;
+  let sql = selectSql + `where bk_id = ${bk_id}`;
+  let countSql = `SELECT COUNT(*) as total FROM bookkeeping_list` + ` `;
+  let params = [];
+  sql += ` ` + orderSql + `limit  ${(page - 1) * pageSize}, ${pageSize}`;
+  const list = await db.query(sql, params);
+  const countRows = await db.query(countSql, params);
+  const total = countRows[0].total;
+  ctx.body = { msg, list, total };
 });
 
-/* 查询总条数 */
-router.get("/selectCounts", async (ctx) => {
-  let {} = ctx.request.query;
-  let sql = `SELECT COUNT(*) as total FROM expenditureStatistics`;
-  let data = await db.query(sql);
-  ctx.body = data;
+router.get("/select", async (ctx) => {
+  let {
+    bk_id,
+    page,
+    pageSize,
+    expenditure_item,
+    expenditure_method,
+    expenditure_type,
+    createDate,
+  } = ctx.request.query;
+  let sql = selectSql + `where 1 = 1 and bk_id = ${bk_id}`;
+  let countSql =
+    `SELECT COUNT(*) as total FROM bookkeeping_list where 1 = 1` + ` `;
+  let params = [];
+  if (expenditure_item) {
+    sql += ` ` + `and expenditure_item like '${expenditure_item}%'` + ` `;
+    countSql += ` ` + `and expenditure_item like '${expenditure_item}%'` + ` `;
+    params.push(expenditure_item);
+  }
+  if (expenditure_method) {
+    sql += ` ` + `and expenditure_method = ${expenditure_method}` + ` `;
+    countSql += ` ` + `and expenditure_method = ${expenditure_method}` + ` `;
+    params.push(expenditure_method);
+  }
+  if (expenditure_type) {
+    sql += ` ` + `and expenditure_type = ${expenditure_type}` + ` `;
+    countSql += ` ` + `and expenditure_type = ${expenditure_type}` + ` `;
+    params.push(expenditure_type);
+  }
+  if (createDate) {
+    sql += ` ` + `and createDate = '${createDate}'` + ` `;
+    countSql += ` ` + `and createDate = '${createDate}'` + ` `;
+    params.push(createDate);
+  }
+  sql += ` ` + orderSql + `limit  ${(page - 1) * pageSize}, ${pageSize}`;
+  const list = await db.query(sql, params);
+  const countRows = await db.query(countSql, params);
+  const total = countRows[0].total;
+  ctx.body = { list, total };
 });
 
-/* 根据内容查询列表 */
-router.get("/selectItem", async (ctx) => {
-  let { page, pageSize, item } = ctx.request.query;
-  let sql =
-    selectSql +
-    `where item like '${item}%'` +
-    orderSql +
-    `  limit  ${(page - 1) * pageSize}, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
-
-/* 根据支出方式查询列表 */
-router.get("/selectPayWay", async (ctx) => {
-  let { page, pageSize, payWay } = ctx.request.query;
-  let sql =
-    selectSql +
-    `where payWay = ${payWay} ` +
-    orderSql +
-    `limit  ${(page - 1) * pageSize}, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
-
-/* 根据支出类型查询列表 */
-router.get("/selectPayType", async (ctx) => {
-  let { page, pageSize, payType } = ctx.request.query;
-  let sql =
-    selectSql +
-    `where payType = ${payType} ` +
-    orderSql +
-    `limit  ${(page - 1) * pageSize}, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
-
-/* 根据创建日期查询列表 */
-router.get("/selectCreateDate", async (ctx) => {
-  let { page, pageSize, createDate } = ctx.request.query;
-  let sql =
-    selectSql +
-    `where createDate = '${createDate}'` +
-    orderSql +
-    `limit  ${(page - 1) * pageSize}, ${pageSize}`;
-  let data = await db.query(sql);
-  ctx.body = data;
-});
-
-/* 根据id查询详细信息 */
 router.get("/selectId", async (ctx) => {
-  let { id } = ctx.request.query;
-  let sql = selectSql + `where id = ${id}`;
+  let { sort_id } = ctx.request.query;
+  let sql = selectSql + `where sort_id = ${sort_id}`;
   let data = await db.query(sql);
-  ctx.body = data;
+  ctx.body = data[0];
 });
 
-/* 根据id删除数据 */
 router.post("/deleteId", async (ctx) => {
   // 硬删除
-  let { id } = ctx.request.body;
-  let sql = `DELETE FROM expenditureStatistics WHERE id = ${id}`;
+  let { sort_id } = ctx.request.body;
+  let sql = `DELETE FROM bookkeeping_list WHERE sort_id = ${sort_id}`;
   let data = await db.query(sql);
-  ctx.body = data;
+  let msg = "删除成功";
+  ctx.body = { msg };
   // 软删除
   // let { username, del } = ctx.request.body;
   // let sql = `update expenditureStatistics set del='${del}' where username='${username}'`
@@ -98,29 +85,39 @@ router.post("/deleteId", async (ctx) => {
   // ctx.body = data;
 });
 
-/* 添加数据 */
-router.post("/addItem", async (ctx) => {
-  let { item, payWay, payType, amount, startDate, createDate } =
-    ctx.request.body;
-  let sql = `insert into expenditureStatistics(item,payWay,payType,amount,startDate,createDate) values ('${item}',${payWay},${payType},${amount},'${startDate}','${createDate}')`;
+router.post("/addExpenditure", async (ctx) => {
+  let msg = "";
+  let {
+    bk_id,
+    expenditure_item,
+    expenditure_method,
+    expenditure_type,
+    expenditure_amount,
+    startDate,
+    createDate,
+  } = ctx.request.body;
+  let sql = `insert into bookkeeping_list(bk_id,expenditure_item,expenditure_method,expenditure_type,expenditure_amount,startDate,createDate) values (${bk_id},'${expenditure_item}',${expenditure_method},${expenditure_type},'${expenditure_amount}','${startDate}','${createDate}')`;
   let data = await db.query(sql);
-  ctx.body = data;
+  let a = data[0];
+  msg = "success";
+  ctx.body = { msg, a };
 });
 
-/* 修改数据 */
-router.post("/updateItem", async (ctx) => {
-  let { id, item, payWay, payType, amount, startDate, createDate } =
-    ctx.request.body;
-  let sql = `update expenditureStatistics set item='${item}',payWay=${payWay},payType=${payType},amount=${amount},startDate='${startDate}',createDate='${createDate}' where id=${id}`;
+router.post("/updateExpenditure", async (ctx) => {
+  let msg = "";
+  let {
+    sort_id,
+    expenditure_item,
+    expenditure_method,
+    expenditure_type,
+    expenditure_amount,
+    createDate,
+  } = ctx.request.body;
+  let sql = `update bookkeeping_list set expenditure_item='${expenditure_item}',expenditure_method=${expenditure_method},expenditure_type=${expenditure_type},expenditure_amount='${expenditure_amount}',createDate='${createDate}' where sort_id=${sort_id}`;
   let data = await db.query(sql);
-  ctx.body = data;
+  let a = data[0];
+  msg = "success";
+  ctx.body = { msg, a };
 });
-
-// router.get("/selectWay", async (ctx) => {
-//   let {} = ctx.request.query;
-//   let sql = `select * from payWay`;
-//   let data = await db.query(sql);
-//   ctx.body = data;
-// });
 
 module.exports = router;

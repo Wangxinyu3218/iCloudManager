@@ -1,10 +1,10 @@
 // db.js 
 var mysql = require('mysql');
 var pool = mysql.createPool({
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'root',
     password: '123456',
-    database: 'account_v2'
+    database: 'bookkeeping_v3'
 });
 function query(sql) {
     return new Promise((resolve, reject) => {
