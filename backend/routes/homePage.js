@@ -91,9 +91,11 @@ router.get("/getDashboard", async (ctx) => {
 router.get("/lastDashboard", async (ctx) => {
   let { bk_id } = ctx.request.query;
   let sql1 = `UPDATE bookkeeping_dashboard_list SET list_amount = ( SELECT SUM( expenditure_amount ) FROM bookkeeping_list WHERE bookkeeping_list.expenditure_type = bookkeeping_dashboard_list.expenditure_type and startDate = '${lastStartDay}' and bookkeeping_dashboard_list.bk_id = ${bk_id});`;
-  let sql2 = `UPDATE bookkeeping_dashboard_list SET list_date = '${lastMonth}' WHERE bk_id = ${bk_id}`;
+  let sql2 = `UPDATE bookkeeping_dashboard_list SET list_date = '${lastMonth}' WHERE bk_id = ${bk_id};`;
+  let sql3 = `UPDATE bookkeeping_dashboard_list SET list_amount = ROUND(list_amount, 2)`;
   let data1 = await db.query(sql1);
   let data2 = await db.query(sql2);
+  let data3 = await db.query(sql3);
   let msg = "success";
 
   ctx.body = msg;

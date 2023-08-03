@@ -384,17 +384,15 @@ export default {
     };
   },
   created() {
-    // if (this.$store.state.user_id == null) {
-    //   this.$message.error("登录失效请重新登录");
-    //   this.$router.push("/");
-    // }
+    if (this.$store.state.user_id == null) {
+      this.$message.error("登录失效请重新登录");
+      this.$router.push("/");
+    }
     if (this.$store.state.user_id != 825901) {
       this.isShow = false;
     }
-    console.log(this.$store.state.user_id);
     this.getDashboard();
     this.countLastDashboard();
-    this.getLastDashboard();
     this.getList();
   },
   methods: {
@@ -441,12 +439,10 @@ export default {
     countLastDashboard() {
       lastDashboard(this.dashboard).then((response) => {
         // console.log(response);
-      });
-    },
-    getLastDashboard() {
-      selectDashboard(this.dashboard).then((response) => {
-        this.dataList = response;
-        this.loading = false;
+        selectDashboard(this.dashboard).then((response) => {
+          this.dataList = response;
+          this.loading = false;
+        });
       });
     },
     getList() {
