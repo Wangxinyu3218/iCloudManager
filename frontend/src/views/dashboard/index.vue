@@ -439,10 +439,10 @@ export default {
     countLastDashboard() {
       lastDashboard(this.dashboard).then((response) => {
         // console.log(response);
-        selectDashboard(this.dashboard).then((response) => {
-          this.dataList = response;
-          this.loading = false;
-        });
+      });
+      selectDashboard(this.dashboard).then((response) => {
+        this.dataList = response;
+        this.loading = false;
       });
     },
     getList() {
