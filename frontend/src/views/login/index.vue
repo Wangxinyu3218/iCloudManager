@@ -37,7 +37,7 @@
       </div>
     </div>
     <div class="btm_bq">
-      © All Rights Reserved 2023 · Star & Deer Tianjin Ltd
+      © All Rights Reserved 2023 · iStarDeer Tianjin Ltd
     </div>
   </div>
 </template>
@@ -51,14 +51,14 @@ export default {
       rotateDegree: 0,
     };
   },
-  created() {
-    window.addEventListener("resize", function () {
-      var width = window.innerWidth;
-      var height = window.innerHeight;
-      if (width < 1293) {
-        window.location.href = "/error.html";
-      }
-    });
+  mounted() {
+    const screenWidth =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
+    if (screenWidth < 1293) {
+      window.location.href = "/error.html";
+    }
   },
   methods: {
     denglu() {
