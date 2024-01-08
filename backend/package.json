@@ -21,12 +21,15 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.0",
+    "md5": "^2.3.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.39",
     "mysql": "^2.18.1",
     "pm2": "^5.3.0"
   },
   "devDependencies": {
+    "crypto-js": "^4.2.0",
+    "koa-cors": "^0.0.16",
     "nodemon": "^1.19.1"
   }
 }
