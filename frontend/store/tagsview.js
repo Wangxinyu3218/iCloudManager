@@ -6,6 +6,7 @@ export const state = () => ({
   roleid: null,
   nickname: null,
   roleName: null,
+  username: null,
 });
 
 export const mutations = {

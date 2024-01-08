@@ -81,15 +81,99 @@
     <div :class="!isCollapse ? 'nuxtcontentF' : 'nuxtcontentT'">
       <nuxt-child />
     </div>
+    <a-modal
+      title="个人信息"
+      okText="再考虑一下"
+      cancelText="确认修改"
+      @ok="cancel"
+      @cancel="confirm"
+      :visible="visible"
+      :closable="false"
+      loading
+    >
+      <a-form-model
+        ref="ruleForm"
+        :model="form"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <a-form-model-item label="用户id">
+          {{ form.uuid }}
+        </a-form-model-item>
+        <a-form-model-item label="用户名">
+          {{ form.username }}
+        </a-form-model-item>
+        <a-form-model-item label="昵称" prop="nickname">
+          <a-input v-model="form.nickname" />
+        </a-form-model-item>
+        <a-form-model-item label="性别">
+          <span v-show="this.form.sex == '0'">{{ "男" }}</span>
+          <span v-show="this.form.sex == '1'">{{ "女" }}</span>
+        </a-form-model-item>
+        <a-form-model-item label="创建时间">
+          {{ form.createtime }}
+        </a-form-model-item>
+        <a-form-model-item label="状态">
+          <span v-show="this.form.sex == '0'" style="color: #64d98a">{{
+            "使用中"
+          }}</span>
+        </a-form-model-item>
+        <a-form-model-item label="密码" prop="password">
+          <a-input-password :maxLength="12" v-model="form.password" />
+        </a-form-model-item> </a-form-model
+    ></a-modal>
   </div>
 </template>
 <script>
+import crypto from "crypto";
 export default {
   data() {
     return {
+      loading: false,
+      visible: false,
       isCollapse: false,
       selectRouteValue: "",
-      spinning: false,
+
+      labelCol: { span: 8 },
+      wrapperCol: { span: 15 },
+      other: "",
+      form: {
+        uuid: null,
+        username: null,
+        nickname: null,
+        sex: null,
+        createtime: null,
+        state: null,
+        password: null,
+      },
+      rules: {
+        nickname: [
+          {
+            required: true,
+            message: "请输入昵称",
+            trigger: "blur",
+          },
+          {
+            min: 1,
+            message: "至少1位",
+            trigger: "blur",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: "blur",
+          },
+          {
+            min: 6,
+            max: 12,
+            message: "6~12位",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   computed: {
@@ -104,7 +188,7 @@ export default {
       {
         name: "首页",
         path: "/manage/homePage",
-        icon: "iconfont icon-weibiaoti1",
+        icon: "iconfont icon-shouye",
       },
     ];
     return { menuList: menuList };
@@ -120,7 +204,7 @@ export default {
     },
   },
   created() {
-    if (this.$store.state.uuid == null) {
+    if (this.$store.state.uuid == null || this.$store.state.roleid == null) {
       this.$router.push("/login");
       this.$notification.open({
         message: "错误",
@@ -141,8 +225,60 @@ export default {
         this.menuList = menu;
       } catch (error) {}
     },
-    setting() {
-      this.$router.push("/manage/user");
+    async setting() {
+      this.visible = true;
+      const loading = this.$loading({
+        lock: true,
+        text: "通信中",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      const response = await this.$axios.get(
+        `setting/findUser?username=${this.$store.state.username}&uuid=${this.$store.state.uuid}`
+      );
+      this.form = response.data.list[0];
+      this.form.password = null;
+      loading.close();
+    },
+    cancel() {
+      this.$refs.ruleForm.resetFields();
+      this.visible = false;
+    },
+    confirm() {
+      this.$refs.ruleForm.validate(async (valid) => {
+        if (valid) {
+          const loading = this.$loading({
+            lock: true,
+            text: "通信中",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+          });
+          setTimeout(async () => {
+            const pwd = crypto
+              .createHash("md5")
+              .update(this.form.password)
+              .digest("hex");
+            const response = await this.$axios.get(
+              `setting/updateUser?uuid=${this.form.uuid}&nickname=${this.form.nickname}&password=${pwd}`
+            );
+            try {
+              this.$notification.open({
+                message: response.data.msg,
+                duration: 5,
+              });
+              this.$store.state.nickname = this.form.nickname;
+              this.visible = false;
+              loading.close();
+            } catch (error) {
+              this.visible = false;
+              loading.close();
+            }
+          }, 2000);
+        } else {
+          loading.close();
+          return false;
+        }
+      });
     },
     logout() {
       const loading = this.$loading({

@@ -128,6 +128,7 @@ export default {
                   this.$store.state.roleid = response.data.data[0].roleid;
                   this.$store.state.nickname = response.data.data[0].nickname;
                   this.$store.state.roleName = response.data.data[0].roleName;
+                  this.$store.state.username = response.data.data[0].username;
                   this.$router.push("/manage/homePage");
                 } else if (response.data.code === 404 || 500) {
                   loading.close();

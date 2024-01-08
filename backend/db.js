@@ -1,7 +1,7 @@
 // db.js
 var mysql = require("mysql");
 var pool = mysql.createPool({
-  host: "121.229.99.43",
+  host: "127.0.0.1",
   user: "root",
   password: "wtywfy5618754",
   database: "icloudmanager",
