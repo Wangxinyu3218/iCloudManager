@@ -15,6 +15,7 @@ const user = require("./routes/user");
 const role = require("./routes/role");
 const menu = require("./routes/menu");
 const setting = require("./routes/setting");
+const type = require("./routes/type");
 
 /* 挂载 */
 // 跨域
@@ -58,6 +59,7 @@ app.use(user.routes(), user.allowedMethods());
 app.use(role.routes(), role.allowedMethods());
 app.use(menu.routes(), menu.allowedMethods());
 app.use(setting.routes(), setting.allowedMethods());
+app.use(type.routes(), type.allowedMethods());
 // 端口
 const hostName = "http://127.0.0.1";
 const port = 8081;

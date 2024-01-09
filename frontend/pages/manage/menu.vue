@@ -1,108 +1,117 @@
 <template>
-  <a-card title="菜单管理">
-    <!-- title -->
-    <h5 style="color: #d60111">
-      您现在正处在系统配置页面中，为保证数据同步正常，请操作完毕数据后务必退出登录等待5分钟后再次进入系统
-    </h5>
-    <!-- form -->
-    <a-form-model :layout="form.layout" :model="form">
-      <a-form-model-item label="菜单名">
-        <a-input v-model="form.name" placeholder="请输入菜单名称" />
-      </a-form-model-item>
-      <a-form-model-item :wrapper-col="form.wrapperCol">
-        <a-button
-          icon="search"
-          type="primary"
-          @click="getList"
-          v-loading="loading"
-        >
-          搜 索
-        </a-button>
-      </a-form-model-item>
-      <a-form-model-item :wrapper-col="form.wrapperCol">
-        <a-button icon="reload" type="text" @click="reset" v-loading="loading">
-          重 置
-        </a-button>
-      </a-form-model-item>
-    </a-form-model>
-    <!-- table -->
-    <a-table
-      class="table"
-      v-loading="loading"
-      :columns="columns"
-      :data-source="data"
-      :pagination="false"
-    >
-      <span slot="action" slot-scope="row">
-        <a-button type="primary" size="small" @click="edit(row)">编辑</a-button>
-        <a-popconfirm
-          title="删除后不可恢复，依赖此菜单页面的功能会受到严重影响。确定删除吗？"
-          ok-text="再考虑一下"
-          cancel-text="确认"
-          @cancel="del(row)"
-        >
-          <a-icon slot="icon" type="question-circle-o" style="color: red" />
-          <a-button type="danger" size="small">删除</a-button>
-        </a-popconfirm>
-      </span>
-    </a-table>
-    <!-- pagination -->
-    <pagination
-      v-show="form.total >= 0"
-      :total="form.total"
-      :page.sync="form.page"
-      :limit.sync="form.pageSize"
-      @pagination="getList"
-    />
-    <!-- modal -->
-    <a-modal
-      title="编辑"
-      :visible="visible"
-      @ok="handleCancel"
-      okText="再考虑一下"
-      @cancel="handleOk"
-      cancelText="修改"
-      :maskClosable="false"
-      :closable="false"
-    >
-      <a-form-model
-        v-loading="loading"
-        ref="ruleForm"
-        :model="mform"
-        :rules="rules"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
-        <a-form-model-item ref="sort" label="排序号" prop="sort">
-          <a-input type="number" v-model="mform.sort" />
+  <div id="menu">
+    <a-card title="菜单管理">
+      <!-- title -->
+      <h5 style="color: #d60111">
+        您现在正处在系统配置页面中，为保证数据同步正常，请操作完毕数据后务必退出登录等待5分钟后再次进入系统
+      </h5>
+      <!-- form -->
+      <a-form-model :layout="form.layout" :model="form">
+        <a-form-model-item label="菜单名">
+          <a-input v-model="form.name" placeholder="请输入菜单名称" />
         </a-form-model-item>
-        <a-form-model-item ref="name" label="菜单名" prop="name">
-          <a-input
-            :max-length="10"
-            v-model="mform.name"
-            @blur="
-              () => {
-                $refs.name.onFieldBlur();
-              }
-            "
-          />
+        <a-form-model-item :wrapper-col="form.wrapperCol">
+          <a-button
+            icon="search"
+            type="primary"
+            @click="getList"
+            v-loading="loading"
+          >
+            搜 索
+          </a-button>
         </a-form-model-item>
-        <a-form-model-item ref="path" label="路径" prop="path">
-          <a-input
-            v-model="mform.path"
-            @blur="
-              () => {
-                $refs.path.onFieldBlur();
-              }
-            "
-          />
-        </a-form-model-item>
-        <a-form-model-item ref="icon" label="图标" prop="icon">
-          <a-input v-model="mform.icon" />
+        <a-form-model-item :wrapper-col="form.wrapperCol">
+          <a-button
+            icon="reload"
+            type="text"
+            @click="reset"
+            v-loading="loading"
+          >
+            重 置
+          </a-button>
         </a-form-model-item>
       </a-form-model>
-    </a-modal>
-  </a-card>
+      <!-- table -->
+      <a-table
+        class="table"
+        v-loading="loading"
+        :columns="columns"
+        :data-source="data"
+        :pagination="false"
+      >
+        <span slot="action" slot-scope="row">
+          <a-button type="primary" size="small" @click="edit(row)"
+            >编辑</a-button
+          >
+          <a-popconfirm
+            title="删除后不可恢复，依赖此菜单页面的功能会受到严重影响。确定删除吗？"
+            ok-text="再考虑一下"
+            cancel-text="确认"
+            @cancel="del(row)"
+          >
+            <a-icon slot="icon" type="question-circle-o" style="color: red" />
+            <a-button type="danger" size="small">删除</a-button>
+          </a-popconfirm>
+        </span>
+      </a-table>
+      <!-- pagination -->
+      <pagination
+        v-show="form.total >= 0"
+        :total="form.total"
+        :page.sync="form.page"
+        :limit.sync="form.pageSize"
+        @pagination="getList"
+      />
+      <!-- modal -->
+      <a-modal
+        title="编辑"
+        :visible="visible"
+        @ok="handleCancel"
+        okText="再考虑一下"
+        @cancel="handleOk"
+        cancelText="修改"
+        :maskClosable="false"
+        :closable="false"
+      >
+        <a-form-model
+          v-loading="loading"
+          ref="ruleForm"
+          :model="mform"
+          :rules="rules"
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+        >
+          <a-form-model-item ref="sort" label="排序号" prop="sort">
+            <a-input type="number" v-model="mform.sort" />
+          </a-form-model-item>
+          <a-form-model-item ref="name" label="菜单名" prop="name">
+            <a-input
+              :max-length="10"
+              v-model="mform.name"
+              @blur="
+                () => {
+                  $refs.name.onFieldBlur();
+                }
+              "
+            />
+          </a-form-model-item>
+          <a-form-model-item ref="path" label="路径" prop="path">
+            <a-input
+              v-model="mform.path"
+              @blur="
+                () => {
+                  $refs.path.onFieldBlur();
+                }
+              "
+            />
+          </a-form-model-item>
+          <a-form-model-item ref="icon" label="图标" prop="icon">
+            <a-input v-model="mform.icon" />
+          </a-form-model-item>
+        </a-form-model>
+      </a-modal>
+    </a-card>
+  </div>
 </template>
 <script>
 export default {
@@ -376,7 +385,9 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.table {
-  margin-top: 20px;
+#menu {
+  .table {
+    margin-top: 20px;
+  }
 }
 </style>
