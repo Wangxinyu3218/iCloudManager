@@ -32,7 +32,7 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxtjs/axios"],
   axios: {
-    baseURL: "http://121.229.99.43:8081/", // 设置Axios的基础URL
+    baseURL: "http://127.0.0.1:8081/", // 设置Axios的基础URL
     timeout: 5000, // 设置请求超时时间（毫秒）
     headers: {
       "Content-Type": "application/json", // 设置请求头的内容类型为JSON

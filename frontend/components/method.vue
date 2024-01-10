@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card title="支出类型字典" :loading="loading">
+    <a-card title="支出方式字典" :loading="loading">
       <a-button type="primary" slot="extra" icon="plus" @click="add"
         >新增</a-button
       >
@@ -111,7 +111,7 @@ export default {
       setTimeout(async () => {
         try {
           const response = await this.$axios.get(
-            `type/listType?uuid=${this.$store.state.uuid}&roleid=${this.$store.state.roleid}`
+            `method/listMethod?uuid=${this.$store.state.uuid}&roleid=${this.$store.state.roleid}`
           );
           this.items = response.data.list;
           this.loading = false;
@@ -134,9 +134,9 @@ export default {
         try {
           const uuid = selectedItem.uuid;
           const roleid = selectedItem.roleid;
-          const typeid = selectedItem.typeid;
+          const methodid = selectedItem.methodid;
           const response = await this.$axios.get(
-            `type/delType?uuid=${uuid}&roleid=${roleid}&typeid=${typeid}`
+            `method/delMethod?uuid=${uuid}&roleid=${roleid}&methodid=${methodid}`
           );
           this.getList();
           this.$notification.open({
@@ -166,10 +166,10 @@ export default {
         try {
           const uuid = this.form.uuid;
           const roleid = this.form.roleid;
-          const typeid = this.form.typeid;
+          const methodid = this.form.methodid;
           const content = this.form.content;
           const response = await this.$axios.get(
-            `type/updateType?uuid=${uuid}&roleid=${roleid}&typeid=${typeid}&content=${content}`
+            `method/updateMethod?uuid=${uuid}&roleid=${roleid}&methodid=${methodid}&content=${content}`
           );
           this.getList();
           this.$notification.open({
@@ -183,7 +183,6 @@ export default {
           this.visible = false;
         }
       }, 1300);
-      //   loading.close();
     },
     insert() {
       const loading = this.$loading({
@@ -198,7 +197,7 @@ export default {
           const roleid = this.$store.state.roleid;
           const content = this.form.content;
           const response = await this.$axios.get(
-            `type/addType?uuid=${uuid}&roleid=${roleid}&content=${content}`
+            `method/addMethod?uuid=${uuid}&roleid=${roleid}&content=${content}`
           );
           this.getList();
           this.$notification.open({
