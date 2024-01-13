@@ -6,6 +6,30 @@ const db = require("../db.js");
 /* 前缀 */
 router.prefix("/bookkeep");
 /* 接口 */
+
+// 增加
+router.post("/addBookkeep", async (ctx) => {
+  let { uuid, roleid, typeid, methodid, content, amount, createtime } =
+    ctx.request.body;
+  try {
+    let sql = `insert into bookkeep (id, uuid, roleid, typeid, methodid, content, amount, createtime) values (uuid(), '${uuid}', '${roleid}', '${typeid}', '${methodid}', '${content}', '${amount}', '${createtime}')`;
+    let data = await db.query(sql);
+    ctx.body = { code: 200, msg: "新增成功", des: "请到列表查看" };
+  } catch (error) {
+    ctx.body = { code: 500, msg: "新增失败", des: "请修改后重新添加" };
+  }
+});
+// 删除
+router.put("/deleteBookkeep", async (ctx) => {
+  let { id } = ctx.request.body;
+  try {
+    let sql = `update bookkeep set state = 1 where id = '${id}'`;
+    let data = await db.query(sql);
+    ctx.body = { code: 200, msg: "删除成功" };
+  } catch (error) {
+    ctx.body = { code: 500, msg: "删除失败" };
+  }
+});
 // 查询
 router.get("/bookkeep", async (ctx) => {
   let { uuid, roleid, page, pageSize, content, typeid, methodid, createtime } =
@@ -47,15 +71,15 @@ router.get("/bookkeep", async (ctx) => {
     ctx.body = { code: 500, msg: "查询失败" };
   }
 });
-// 删除
-router.post("/deleteBookkeep", async (ctx) => {
-  let { id } = ctx.request.body;
+// 修改
+router.put("/updateBookkeep", async (ctx) => {
+  let { id, typeid, methodid, content, createtime, amount } = ctx.request.body;
   try {
-    let sql = `update bookkeep set state = 1 where id = '${id}'`;
+    let sql = `update bookkeep set typeid = '${typeid}', methodid = '${methodid}', content = '${content}', createtime = '${createtime}', amount = '${amount}' where id = '${id}'`;
     let data = await db.query(sql);
-    ctx.body = { code: 200, msg: "删除成功" };
+    ctx.body = { code: 200, msg: "修改成功", des: "请在列表查看" };
   } catch (error) {
-    ctx.body = { code: 500, msg: "删除失败" };
+    ctx.body = { code: 500, msg: "修改失败", des: "请修改后重新提交" };
   }
 });
 module.exports = router;

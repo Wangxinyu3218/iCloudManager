@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-card title="财务管理">
-      <!-- title -->
+      <!-- form -->
       <a-form-model :layout="form.layout" :model="form">
         <a-form-model-item label="支出类目"
           ><a-input
@@ -25,7 +25,11 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="支出方式">
-          <a-select v-model="form.methodid" style="width: 120px">
+          <a-select
+            v-model="form.methodid"
+            style="width: 120px"
+            placeholder="请选择支出方式"
+          >
             <a-select-option
               v-for="item in moptions"
               :value="item.methodid"
@@ -74,7 +78,9 @@
         :pagination="false"
       >
         <span slot="action" slot-scope="row">
-          <a-button type="primary" size="small">编辑</a-button>
+          <a-button type="primary" size="small" @click="edit(row)"
+            >编辑</a-button
+          >
           <a-popconfirm
             title="删除后会影响首页的数据变化，确定删除吗？"
             ok-text="再考虑一下"
@@ -94,6 +100,64 @@
         :limit.sync="form.pageSize"
         @pagination="getList"
       />
+      <!-- modal -->
+      <a-modal
+        title="编辑"
+        :visible="visible"
+        @ok="handleCancel"
+        okText="再考虑一下"
+        @cancel="handleOk"
+        cancelText="修改"
+        :maskClosable="false"
+        :closable="false"
+      >
+        <a-form-model
+          v-loading="loading"
+          ref="ruleForm"
+          :model="mform"
+          :rules="rules"
+          :label-col="mform.labelCol"
+          :wrapper-col="mform.wrapperCol"
+        >
+          <a-form-model-item label="备注" prop="content">
+            <a-input v-model="mform.content" />
+          </a-form-model-item>
+          <a-form-model-item label="支出类型" prop="typeid">
+            <a-select v-model="mform.typeid" placeholder="请选择支出类型">
+              <a-select-option
+                v-for="item in toptions"
+                :value="item.typeid"
+                :key="item.typeid"
+              >
+                {{ item.content }}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+          <a-form-model-item label="支出方式" prop="methodid">
+            <a-select v-model="mform.methodid">
+              <a-select-option
+                v-for="item in moptions"
+                :value="item.methodid"
+                :key="item.methodid"
+              >
+                {{ item.content }}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+          <a-form-model-item label="发生金额" prop="amount">
+            <a-input type="number" v-model="mform.amount" />
+          </a-form-model-item>
+          <a-form-model-item label="发生日期" prop="createtime"
+            ><a-date-picker
+              v-model="mform.createtime"
+              placeholder="请选择发生日期"
+              :showToday="false"
+              show-time
+            >
+            </a-date-picker
+          ></a-form-model-item>
+        </a-form-model>
+      </a-modal>
     </a-card>
   </div>
 </template>
@@ -103,6 +167,12 @@ export default {
   data() {
     return {
       loading: false,
+      visible: false,
+      labelCol: { span: 6 },
+      wrapperCol: { span: 8 },
+      data: [],
+      toptions: [],
+      moptions: [],
       form: {
         layout: "inline",
         typeid: null,
@@ -113,9 +183,16 @@ export default {
         page: 1,
         pageSize: 10,
       },
-      toptions: [],
-      moptions: [],
-      data: [],
+      mform: {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 14 },
+        id: null,
+        typeid: null,
+        methodid: null,
+        content: null,
+        amount: null,
+        createtime: null,
+      },
       columns: [
         {
           key: 1,
@@ -151,8 +228,43 @@ export default {
           scopedSlots: { customRender: "action" },
         },
       ],
-      labelCol: { span: 6 },
-      wrapperCol: { span: 8 },
+      rules: {
+        content: [
+          {
+            required: true,
+            message: "请输入备注",
+            trigger: "blur",
+          },
+        ],
+        typeid: [
+          {
+            required: true,
+            message: "请选择类型",
+            trigger: "change",
+          },
+        ],
+        methodid: [
+          {
+            required: true,
+            message: "请选择方式",
+            trigger: "change",
+          },
+        ],
+        amount: [
+          {
+            required: true,
+            message: "请输入金额",
+            trigger: "blur",
+          },
+        ],
+        createtime: [
+          {
+            required: true,
+            message: "请选择时间",
+            trigger: "change",
+          },
+        ],
+      },
     };
   },
   created() {
@@ -161,6 +273,7 @@ export default {
     this.getMethod();
   },
   methods: {
+    /* 获取列表 */
     getList() {
       this.loading = true;
       if (this.form.createtime == null) {
@@ -209,6 +322,7 @@ export default {
         }
       }, 500);
     },
+    /* 重置 */
     reset() {
       this.form.typeid = null;
       this.form.methodid = null;
@@ -218,6 +332,7 @@ export default {
       this.form.pageSize = 10;
       this.getList();
     },
+    /* 获取类型字典 */
     async getType() {
       try {
         const response = await this.$axios.get(
@@ -228,6 +343,7 @@ export default {
         console.error(error);
       }
     },
+    /* 获取方式字典 */
     async getMethod() {
       try {
         const response = await this.$axios.get(
@@ -238,18 +354,16 @@ export default {
         console.error(error);
       }
     },
-
     /* 删除 */
     del(row) {
       this.loading = true;
       setTimeout(async () => {
         const temp = { id: row.id };
-        const response = await this.$axios.post(`bookkeep/deleteBookkeep`, temp);
+        const response = await this.$axios.put(`bookkeep/deleteBookkeep`, temp);
         try {
           if (response.data.code === 200) {
             this.$notification.open({
-              message: "删除成功",
-              description: response.data.msg,
+              message: response.data.msg,
               duration: 8,
             });
             this.getList();
@@ -272,6 +386,79 @@ export default {
           this.getList();
         }
       }, 500);
+    },
+    /* 编辑 */
+    edit(row) {
+      this.mform.id = row.id;
+      this.mform.content = row.content;
+      this.mform.typeid = row.typeid;
+      this.mform.methodid = row.methodid;
+      this.mform.amount = row.amount;
+      this.mform.createtime = row.createtime;
+      this.visible = true;
+    },
+    /* 确认提交 */
+    handleOk() {
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          this.loading = true;
+          if (this.mform.createtime == null) {
+            this.mform.createtime = null;
+          } else {
+            let dateObj = new Date(this.mform.createtime); // 创建Date对象
+            let year = dateObj.getFullYear(); // 获取年份
+            let month = ("0" + (dateObj.getMonth() + 1)).slice(-2); // 获取月份（月份是从0开始的，所以需要加1）
+            let day = ("0" + dateObj.getDate()).slice(-2); // 获取日期
+            // 获取小时、分钟和秒，并确保它们是两位数的格式
+            let hours = ("0" + dateObj.getHours()).slice(-2);
+            let minutes = ("0" + dateObj.getMinutes()).slice(-2);
+            let seconds = ("0" + dateObj.getSeconds()).slice(-2);
+            this.mform.createtime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+          }
+          setTimeout(async () => {
+            // const temp = { id: row.id };
+            const response = await this.$axios.put(
+              `bookkeep/updateBookkeep`,
+              this.mform
+            );
+            try {
+              if (response.data.code === 200) {
+                this.$notification.open({
+                  message: response.data.msg,
+                  description: response.data.des,
+                  duration: 8,
+                });
+                this.getList();
+                this.visible = false;
+                this.loading = false;
+              } else {
+                this.$notification.open({
+                  message: response.data.msg,
+                  description: response.data.des,
+                  duration: 8,
+                });
+                this.visible = false;
+                this.loading = false;
+                this.getList();
+              }
+            } catch (error) {
+              this.$notification.open({
+                message: "错误",
+                description: "未知错误",
+                duration: 8,
+              });
+              this.visible = false;
+              this.loading = false;
+              this.getList();
+            }
+          }, 500);
+        }
+      });
+    },
+    /* 关闭 */
+    handleCancel() {
+      this.$refs.ruleForm.resetFields();
+      this.visible = false;
     },
   },
 };
