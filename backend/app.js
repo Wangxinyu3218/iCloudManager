@@ -18,6 +18,7 @@ const setting = require("./routes/setting");
 const type = require("./routes/type");
 const method = require("./routes/method");
 const bookkeep = require("./routes/bookkeep");
+const calendar = require("./routes/calendar");
 
 /* 挂载 */
 // 跨域
@@ -64,6 +65,7 @@ app.use(setting.routes(), setting.allowedMethods());
 app.use(type.routes(), type.allowedMethods());
 app.use(method.routes(), method.allowedMethods());
 app.use(bookkeep.routes(), bookkeep.allowedMethods());
+app.use(calendar.routes(), calendar.allowedMethods());
 // 端口
 const hostName = "http://127.0.0.1";
 const port = 8081;
