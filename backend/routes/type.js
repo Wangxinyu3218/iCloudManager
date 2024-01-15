@@ -1,6 +1,5 @@
 /* 中间件 */
 const router = require("koa-router")();
-const json = require("koa-json");
 /* 数据库操作 */
 const db = require("../db.js");
 /* 前缀 */
@@ -48,6 +47,19 @@ router.get("/addType", async (ctx) => {
     ctx.body = { code: 200, msg: "增加成功" };
   } catch (error) {
     ctx.body = { code: 500, msg: "增加失败" };
+  }
+});
+// 增加
+router.get("/addDash", async (ctx) => {
+  let { uuid, typeid, content } = ctx.request.query;
+  let update = `update type set isdash = 1 where uuid='${uuid}' and typeid='${typeid}'`;
+  let sql = `insert into dashcard (id, uuid, typeid, content) values (uuid(), '${uuid}', '${typeid}', '${content}')`;
+  try {
+    const upd = await db.query(update);
+    const list = await db.query(sql);
+    ctx.body = { code: 200, msg: "添加成功" };
+  } catch (error) {
+    ctx.body = { code: 500, msg: "添加失败" };
   }
 });
 module.exports = router;

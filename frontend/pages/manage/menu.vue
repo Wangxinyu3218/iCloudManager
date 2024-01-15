@@ -15,7 +15,7 @@
             icon="search"
             type="primary"
             @click="getList"
-            v-loading="loading"
+            :loading="loading"
           >
             搜 索
           </a-button>
@@ -25,7 +25,7 @@
             icon="reload"
             type="text"
             @click="reset"
-            v-loading="loading"
+            :loading="loading"
           >
             重 置
           </a-button>

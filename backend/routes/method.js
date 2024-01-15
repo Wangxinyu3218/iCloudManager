@@ -1,6 +1,5 @@
 /* 中间件 */
 const router = require("koa-router")();
-const json = require("koa-json");
 /* 数据库操作 */
 const db = require("../db.js");
 /* 前缀 */

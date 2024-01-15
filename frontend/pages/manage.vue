@@ -209,7 +209,7 @@ export default {
       this.$notification.open({
         message: "错误",
         description: "请重新登录",
-        duration: 6,
+        duration: 4,
       });
     }
     this.menu();

@@ -53,7 +53,7 @@
             icon="search"
             type="primary"
             @click="getList"
-            v-loading="loading"
+            :loading="loading"
           >
             搜 索
           </a-button>
@@ -62,7 +62,7 @@
           <a-button
             icon="reload"
             type="text"
-            v-loading="loading"
+            :loading="loading"
             @click="reset"
           >
             重 置

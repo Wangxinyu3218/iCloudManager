@@ -9,22 +9,34 @@
           class="car"
           size="small"
           title="操作"
-          style="width: 150px"
+          style="width: 170px"
           v-for="(item, index) in items"
           :key="item.id"
         >
-          <a-button-group slot="extra" size="small">
-            <a-button type="primary" icon="edit" @click="edit(index)" />
-            <a-popconfirm
-              title="删除后不能再关联类目了，确定继续吗？"
-              ok-text="再考虑一下"
-              cancel-text="确定"
-              @confirm="cancel"
-              @cancel="confirm(index)"
-            >
-              <a-button type="danger" icon="delete"
-            /></a-popconfirm>
-          </a-button-group>
+          <a-button
+            type="primary"
+            icon="edit"
+            @click="edit(index)"
+            slot="extra"
+            size="small"
+          />
+          <a-popconfirm
+            title="删除后不能再关联类目了，确定继续吗？"
+            ok-text="再考虑一下"
+            cancel-text="确定"
+            @confirm="cancel"
+            @cancel="confirm(index)"
+            slot="extra"
+          >
+            <a-button type="danger" icon="delete" size="small"
+          /></a-popconfirm>
+          <a-button
+            icon="plus"
+            @click="addDash(index)"
+            slot="extra"
+            size="small"
+            v-if="items[index].isdash == '0'"
+          />
           {{ item.content }}
         </a-card>
       </a-row>
@@ -216,6 +228,29 @@ export default {
     handleCancel() {
       this.visible = false;
       this.avisible = false;
+    },
+    addDash(index) {
+      const selectedItem = this.items[index];
+      this.loading = true;
+      setTimeout(async () => {
+        try {
+          const uuid = selectedItem.uuid;
+          const content = selectedItem.content;
+          const typeid = selectedItem.typeid;
+          const response = await this.$axios.get(
+            `type/addDash?uuid=${uuid}&content=${content}&typeid=${typeid}`
+          );
+          this.getList();
+          this.$notification.open({
+            message: response.data.msg,
+            duration: 4,
+          });
+          this.loading = false;
+        } catch (error) {
+          this.loading = false;
+        }
+        this.loading = false;
+      }, 1300);
     },
   },
 };
