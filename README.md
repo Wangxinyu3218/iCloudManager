@@ -84,6 +84,11 @@ V5_20240101：
 ```
 
 ![login](assets/V5_20240101/login.jpeg)
+![homePage](assets/V5_20240101/homePage.jpeg)
+![bookkeep](assets/V5_20240101/bookkeep.jpeg)
+![addBook](assets/V5_20240101/addBook.jpeg)
+![calender](assets/V5_20240101/calender.jpeg)
+![dict](assets/V5_20240101/dict.jpeg)
 ![menu](assets/V5_20240101/menu.jpeg)
 ![role](assets/V5_20240101/role.jpeg)
 ![user](assets/V5_20240101/user.jpeg)
