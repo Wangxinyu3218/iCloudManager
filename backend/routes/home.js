@@ -179,5 +179,16 @@ router.post("/select", async (ctx) => {
     ctx.body = { code: 500, msg: "查询失败" };
   }
 });
+// 排序
+router.post("/order", async (ctx) => {
+  let { uuid } = ctx.request.body;
+  try {
+    let sql = `select * from dashcard where uuid = '${uuid}' and state = 0 order by lmamount desc`;
+    let list = await db.query(sql);
+    ctx.body = { code: 200, msg: "查询成功", list };
+  } catch (error) {
+    ctx.body = { code: 500, msg: "查询失败" };
+  }
+});
 
 module.exports = router;
