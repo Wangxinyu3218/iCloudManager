@@ -19,6 +19,7 @@ const type = require("./routes/type");
 const method = require("./routes/method");
 const bookkeep = require("./routes/bookkeep");
 const calendar = require("./routes/calendar");
+const statistic = require("./routes/statistic");
 const home = require("./routes/home");
 
 /* 挂载 */
@@ -67,6 +68,7 @@ app.use(type.routes(), type.allowedMethods());
 app.use(method.routes(), method.allowedMethods());
 app.use(bookkeep.routes(), bookkeep.allowedMethods());
 app.use(calendar.routes(), calendar.allowedMethods());
+app.use(statistic.routes(), statistic.allowedMethods());
 app.use(home.routes(), home.allowedMethods());
 // 端口
 const hostName = "http://127.0.0.1";

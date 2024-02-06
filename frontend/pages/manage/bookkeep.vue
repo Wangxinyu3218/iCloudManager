@@ -453,11 +453,13 @@ export default {
           }
           setTimeout(async () => {
             // const temp = { id: row.id };
-            if ((this.mform.iscost = "支出")) {
+            if (this.mform.iscost === "支出") {
               this.mform.iscost = 0;
-            } else {
+            } else if (this.mform.iscost === "收入") {
               this.mform.iscost = 1;
             }
+            // console.log(this.mform.iscost);
+            // return;
             const response = await this.$axios.put(
               `bookkeep/updateBookkeep`,
               this.mform

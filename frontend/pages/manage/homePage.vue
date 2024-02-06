@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <a-card title="总览">
+      <a-card title="总览" :loading="loading">
         <a slot="extra"
           ><a-button type="link" icon="edit" @click="edit">修改</a-button></a
         >
@@ -50,48 +50,14 @@
               :precision="2"
               :value="statistic.cost"
               ><template #suffix>
-                <div
-                  v-if="
-                    parseFloat(
-                      (
-                        (statistic.cost - statistic.lcost) /
-                        statistic.lcost
-                      ).toFixed(2)
-                    ) >= '0'
-                  "
-                >
+                <div v-if="statistic.costRise > '0'">
                   <a-icon type="rise" /> 同比增长{{
-                    parseFloat(
-                      (
-                        (statistic.cost - statistic.lcost) /
-                        statistic.lcost
-                      ).toFixed(2)
-                    ) *
-                      100 +
-                    "%"
+                    statistic.costRise * 100 + "%"
                   }}
                 </div>
-                <div
-                  v-else-if="
-                    parseFloat(
-                      (
-                        (statistic.cost - statistic.lcost) /
-                        statistic.lcost
-                      ).toFixed(2)
-                    ) < '0'
-                  "
-                >
+                <div v-else-if="statistic.costRise < '0'">
                   <a-icon type="fall" /> 同比下降{{
-                    Math.abs(
-                      parseFloat(
-                        (
-                          (statistic.cost - statistic.lcost) /
-                          statistic.lcost
-                        ).toFixed(2)
-                      )
-                    ) *
-                      100 +
-                    "%"
+                    Math.abs(statistic.costRise) * 100 + "%"
                   }}
                 </div></template
               ></a-statistic
@@ -103,52 +69,18 @@
               :precision="2"
               :value="statistic.income"
               ><template #suffix>
-                <div
-                  v-if="
-                    parseFloat(
-                      (
-                        (statistic.income - statistic.lincome) /
-                        statistic.lincome
-                      ).toFixed(2)
-                    ) >= '0'
-                  "
-                >
+                <div v-if="statistic.incomeRise > '0'">
                   <a-icon type="rise" /> 同比增长{{
-                    parseFloat(
-                      (
-                        (statistic.income - statistic.lincome) /
-                        statistic.lincome
-                      ).toFixed(2)
-                    ) *
-                      100 +
-                    "%"
+                    statistic.incomeRise * 100 + "%"
                   }}
                 </div>
-                <div
-                  v-else-if="
-                    parseFloat(
-                      (
-                        (statistic.income - statistic.lincome) /
-                        statistic.lincome
-                      ).toFixed(2)
-                    ) < '0'
-                  "
-                >
+                <div v-else-if="statistic.incomeRise < '0'">
                   <a-icon type="fall" /> 同比下降{{
-                    Math.abs(
-                      parseFloat(
-                        (
-                          (statistic.income - statistic.lincome) /
-                          statistic.lincome
-                        ).toFixed(2)
-                      )
-                    ) *
-                      100 +
-                    "%"
+                    Math.abs(statistic.incomeRise) * 100 + "%"
                   }}
                 </div></template
-              ></a-statistic
-            >
+              >
+            </a-statistic>
           </a-col>
         </a-row>
       </a-card>
@@ -156,6 +88,11 @@
     <div class="main">
       <div class="cal">
         <a-card title="报表" :loading="loading">
+          <a slot="extra"
+            ><a-button type="link" icon="reload" @click="refr"
+              >刷新</a-button
+            ></a
+          >
           <a-row type="flex">
             <a-card
               class="car"
@@ -260,7 +197,8 @@ export default {
         lincome: "",
         cost: "",
         income: "",
-        rise: "",
+        costRise: "",
+        incomeRise: "",
       },
       mform: {
         total: null,
@@ -350,9 +288,21 @@ export default {
         this.statistic = response.data.list[0];
         this.statistic.warn = this.statistic.cost + "/" + this.statistic.warn;
         this.statistic.percent = response.data.list[0].percent;
-        // rise =
-        //   (this.statistic.cost - this.statistic.lcost) / this.statistic.lcost;
-        // this.statistic.rise = parseFloat(rise.toFixed(2));
+        if (this.statistic.lcost === 0) {
+          this.statistic.costRise = 0;
+        } else {
+          var rise =
+            (this.statistic.cost - this.statistic.lcost) / this.statistic.lcost;
+          this.statistic.costRise = parseFloat(rise.toFixed(2));
+        }
+        if (this.statistic.lincome === 0) {
+          this.statistic.incomeRise = 0;
+        } else {
+          var fall =
+            (this.statistic.income - this.statistic.lincome) /
+            this.statistic.lincome;
+          this.statistic.incomeRise = parseFloat(fall.toFixed(2));
+        }
         this.loading = false;
       } catch (error) {
         this.loading = false;
@@ -474,6 +424,12 @@ export default {
       // if()
       this.mform.warn = Number(this.statistic.warn.split("/")[1]) || 0;
     },
+    /* 刷新报表 */
+    refr() {
+      this.getCount();
+      this.getList();
+      this.getInfo();
+    },
   },
 };
 </script>
@@ -488,8 +444,6 @@ export default {
       margin-right: 20px;
       margin-top: 15px;
     }
-  }
-  .list {
   }
 }
 </style>
