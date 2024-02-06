@@ -18,8 +18,8 @@ router.get("/listType", async (ctx) => {
 });
 // 修改
 router.get("/updateType", async (ctx) => {
-  let { uuid, roleid, typeid, content } = ctx.request.query;
-  let sql = `update type set content = '${content}' where uuid = '${uuid}' and roleid = '${roleid}' and typeid = '${typeid}'`;
+  let { uuid, roleid, typeid, content, iscost } = ctx.request.query;
+  let sql = `update type set content = '${content}', iscost = ${iscost} where uuid = '${uuid}' and roleid = '${roleid}' and typeid = '${typeid}'`;
   let data = await db.query(sql);
   try {
     ctx.body = { code: 200, msg: "修改成功" };
@@ -40,8 +40,8 @@ router.get("/delType", async (ctx) => {
 });
 // 增加
 router.get("/addType", async (ctx) => {
-  let { uuid, roleid, content } = ctx.request.query;
-  let sql = `insert into type (id, uuid, roleid, typeid, content) values (uuid(), '${uuid}', '${roleid}', uuid(), '${content}')`;
+  let { uuid, roleid, content, iscost } = ctx.request.query;
+  let sql = `insert into type (id, uuid, roleid, typeid, iscost, content) values (uuid(), '${uuid}', '${roleid}', uuid(), ${iscost}, '${content}')`;
   try {
     const list = await db.query(sql);
     ctx.body = { code: 200, msg: "增加成功" };

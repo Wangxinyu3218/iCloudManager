@@ -140,7 +140,7 @@ export default {
           try {
             const loading = this.$loading({
               lock: true,
-              text: "登录中",
+              text: "注册中",
               spinner: "el-icon-loading",
               background: "rgba(0, 0, 0, 0.7)",
             });
@@ -160,7 +160,7 @@ export default {
                 this.$router.back();
                 this.$notification.open({
                   message: "注册成功",
-                  description: "现在可以使用系统了，请及时联系管理员分配角色",
+                  description: "请及时联系管理员分配角色",
                   duration: 10,
                 });
               }

@@ -9,6 +9,16 @@
             placeholder="请输入支出类目"
           ></a-input
         ></a-form-model-item>
+        <a-form-model-item label="分类">
+          <a-select
+            v-model="form.iscost"
+            placeholder="请选择分类"
+            style="width: 120px"
+          >
+            <a-select-option value="0"> 支出 </a-select-option>
+            <a-select-option value="1"> 收入 </a-select-option>
+          </a-select>
+        </a-form-model-item>
         <a-form-model-item label="支出类型">
           <a-select
             v-model="form.typeid"
@@ -59,12 +69,7 @@
           </a-button>
         </a-form-model-item>
         <a-form-model-item :wrapper-col="wrapperCol">
-          <a-button
-            icon="reload"
-            type="text"
-            :loading="loading"
-            @click="reset"
-          >
+          <a-button icon="reload" type="text" :loading="loading" @click="reset">
             重 置
           </a-button>
         </a-form-model-item>
@@ -122,6 +127,12 @@
           <a-form-model-item label="备注" prop="content">
             <a-input v-model="mform.content" />
           </a-form-model-item>
+          <a-form-model-item label="分类" prop="iscost">
+            <a-select v-model="mform.iscost" placeholder="请选择分类">
+              <a-select-option value="0"> 支出 </a-select-option>
+              <a-select-option value="1"> 收入 </a-select-option>
+            </a-select>
+          </a-form-model-item>
           <a-form-model-item label="支出类型" prop="typeid">
             <a-select v-model="mform.typeid" placeholder="请选择支出类型">
               <a-select-option
@@ -175,6 +186,7 @@ export default {
       moptions: [],
       form: {
         layout: "inline",
+        iscost: null,
         typeid: null,
         content: null,
         methodid: null,
@@ -190,10 +202,17 @@ export default {
         typeid: null,
         methodid: null,
         content: null,
+        iscost: null,
         amount: null,
         createtime: null,
       },
       columns: [
+        {
+          key: 0,
+          title: "支出分类",
+          dataIndex: "iscost",
+          ellipsis: true,
+        },
         {
           key: 1,
           title: "支出方式",
@@ -234,6 +253,13 @@ export default {
             required: true,
             message: "请输入备注",
             trigger: "blur",
+          },
+        ],
+        iscost: [
+          {
+            required: true,
+            message: "请选择分类",
+            trigger: "change",
           },
         ],
         typeid: [
@@ -289,13 +315,14 @@ export default {
       setTimeout(async () => {
         const page = this.form.page;
         const pageSize = this.form.pageSize;
+        const iscost = this.form.iscost || "";
         const typeid = this.form.typeid || "";
         const methodid = this.form.methodid || "";
         const content = this.form.content || "";
         const createtime = this.form.createtime || "";
         const uuid = this.$store.state.uuid;
         const roleid = this.$store.state.roleid;
-        let query = `page=${page}&pageSize=${pageSize}&content=${content}&typeid=${typeid}&methodid=${methodid}&createtime=${createtime}&uuid=${uuid}&roleid=${roleid}`;
+        let query = `page=${page}&pageSize=${pageSize}&content=${content}&typeid=${typeid}&iscost=${iscost}&methodid=${methodid}&createtime=${createtime}&uuid=${uuid}&roleid=${roleid}`;
         // console.log(name,'name')
         // return
         const response = await this.$axios.get(`bookkeep/bookkeep?${query}`);
@@ -303,6 +330,13 @@ export default {
           if (response.data.code === 200) {
             this.data = response.data.list;
             this.form.total = response.data.total;
+            for (var i = 0; i <= response.data.list.length; i++) {
+              if (response.data.list[i].iscost === 0) {
+                this.data[i].iscost = "支出";
+              } else {
+                this.data[i].iscost = "收入";
+              }
+            }
             this.loading = false;
           } else {
             this.$notification.open({
@@ -313,17 +347,18 @@ export default {
             this.loading = false;
           }
         } catch (error) {
-          this.$notification.open({
-            message: "错误",
-            description: "未知错误",
-            duration: 4,
-          });
+          // this.$notification.open({
+          //   message: "错误",
+          //   description: "未知错误",
+          //   duration: 4,
+          // });
           this.loading = false;
         }
       }, 500);
     },
     /* 重置 */
     reset() {
+      this.form.iscost = null;
       this.form.typeid = null;
       this.form.methodid = null;
       this.form.content = null;
@@ -391,6 +426,7 @@ export default {
     edit(row) {
       this.mform.id = row.id;
       this.mform.content = row.content;
+      this.mform.iscost = row.iscost;
       this.mform.typeid = row.typeid;
       this.mform.methodid = row.methodid;
       this.mform.amount = row.amount;
@@ -417,6 +453,11 @@ export default {
           }
           setTimeout(async () => {
             // const temp = { id: row.id };
+            if ((this.mform.iscost = "支出")) {
+              this.mform.iscost = 0;
+            } else {
+              this.mform.iscost = 1;
+            }
             const response = await this.$axios.put(
               `bookkeep/updateBookkeep`,
               this.mform

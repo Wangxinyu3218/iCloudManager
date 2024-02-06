@@ -21,28 +21,61 @@ router.post("/register", async (ctx) => {
 // 登录
 router.post("/login", async (ctx) => {
   let { username, password } = ctx.request.body;
-  // let sql = `select * from users where username='${username}'`;
-  let sql = `SELECT t.*, t1.roleName FROM users t LEFT JOIN role t1 ON t.roleid = t1.roleid where username='${username}' and t.state = 0`;
-
-  // let data = await db.query(sql);
-  // if ((data = [])) {
-  //   // console.log("0");
-  //   ctx.body = { code: 400, msg: "用户异常" };
-  // } else {
-    // console.log("1");
-    try {
-      let data = await db.query(sql);
-      if (data[0].password === password) {
-        let code = 200;
-        let msg = "登录成功";
-        ctx.body = { code, data, msg };
-      } else if (data[0].password !== password) {
-        ctx.body = { code: 404, msg: "用户名或密码错误" };
+  /* 先查出这个用户 */
+  var find = `select * from users where username='${username}' and state = 0`;
+  var result = await db.query(find);
+  /* 没用户滚蛋 */
+  if (result[0] == null) {
+    ctx.body = { code: 500, msg: "无此用户" };
+  } else if (result[0].roleid == null) {
+    /* 没配置角色滚蛋 */
+    ctx.body = { code: 404, msg: "请联系管理员配置角色" };
+  } else {
+    /* 有用户查总览表 */
+    var select = `select * from statistic where uuid='${result[0].uuid}' and roleid='${result[0].roleid}'`;
+    var list = await db.query(select);
+    /* 如果没数据 */
+    if (list[0] == null) {
+      try {
+        /* 插一条 */
+        let insert = `insert into statistic (id, uuid, roleid, total, value, warn, percent) values (uuid(), '${result[0].uuid}', '${result[0].roleid}', 0, 0, 0, 0)`;
+        let data = await db.query(insert);
+        /* 再登录 */
+        let sql = `SELECT t.*, t1.roleName FROM users t LEFT JOIN role t1 ON t.roleid = t1.roleid where username='${username}' and t.state = 0`;
+        try {
+          let data = await db.query(sql);
+          /* 查密码 */
+          if (data[0].password === password) {
+            let code = 200;
+            let msg = "登录成功";
+            ctx.body = { code, data, msg };
+          } else if (data[0].password !== password) {
+            ctx.body = { code: 404, msg: "用户名或密码错误" };
+          }
+        } catch (error) {
+          ctx.body = { code: 500, msg: "无此用户" };
+        }
+      } catch (error) {
+        ctx.body = { code: 500, msg: "未知错误", des: "请联系系统管理员" };
       }
-    } catch (error) {
-      ctx.body = { code: 500, msg: "无此用户" };
+    } else {
+      /* 如果已经有数据 */
+      let sql = `SELECT t.*, t1.roleName FROM users t LEFT JOIN role t1 ON t.roleid = t1.roleid where username='${username}' and t.state = 0`;
+      try {
+        let data = await db.query(sql);
+        /* 正常查密码登录就行 */
+        if (data[0].password === password) {
+          let code = 200;
+          let msg = "登录成功";
+          ctx.body = { code, data, msg };
+        } else if (data[0].password !== password) {
+          ctx.body = { code: 404, msg: "用户名或密码错误" };
+        }
+      } catch (error) {
+        ctx.body = { code: 500, msg: "无此用户" };
+      }
     }
-  // }
+  }
 });
 // 查询
 router.get("/selectUser", async (ctx) => {

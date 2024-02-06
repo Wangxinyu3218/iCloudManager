@@ -8,10 +8,10 @@ router.prefix("/bookkeep");
 
 // 增加
 router.post("/addBookkeep", async (ctx) => {
-  let { uuid, roleid, typeid, methodid, content, amount, createtime } =
+  let { uuid, roleid, typeid, methodid, iscost, content, amount, createtime } =
     ctx.request.body;
   try {
-    let sql = `insert into bookkeep (id, uuid, roleid, typeid, methodid, content, amount, createtime) values (uuid(), '${uuid}', '${roleid}', '${typeid}', '${methodid}', '${content}', '${amount}', '${createtime}')`;
+    let sql = `insert into bookkeep (id, uuid, roleid, typeid, methodid, iscost, content, amount, createtime) values (uuid(), '${uuid}', '${roleid}', '${typeid}', '${methodid}', ${iscost}, '${content}', '${amount}', '${createtime}')`;
     let data = await db.query(sql);
     ctx.body = { code: 200, msg: "新增成功", des: "请到列表查看" };
   } catch (error) {
@@ -31,10 +31,19 @@ router.put("/deleteBookkeep", async (ctx) => {
 });
 // 查询
 router.get("/bookkeep", async (ctx) => {
-  let { uuid, roleid, page, pageSize, content, typeid, methodid, createtime } =
-    ctx.request.query;
+  let {
+    uuid,
+    roleid,
+    page,
+    pageSize,
+    content,
+    typeid,
+    methodid,
+    iscost,
+    createtime,
+  } = ctx.request.query;
   let sql = `SELECT t.*, t1.content as tcontent, t2.content as mcontent FROM bookkeep t LEFT JOIN type t1 ON t.typeid = t1.typeid LEFT JOIN method t2 ON t.methodid = t2.methodid where t.uuid='${uuid}' and t.roleid= '${roleid}' and t.state = 0`;
-  let count = `select count(*) as total from bookkeep where state = 0`;
+  let count = `select count(*) as total from bookkeep where state = 0 and uuid = '${uuid}' and roleid= '${roleid}'`;
   let params = [];
   if (content) {
     sql += ` ` + `and t.content like '${content}%'`;
@@ -51,7 +60,11 @@ router.get("/bookkeep", async (ctx) => {
     count += ` ` + `and methodid = '${methodid}'`;
     params.push(methodid);
   }
-
+  if (iscost) {
+    sql += ` ` + `and t.iscost = '${iscost}'`;
+    count += ` ` + `and iscost = '${iscost}'`;
+    params.push(iscost);
+  }
   if (createtime) {
     sql += ` ` + `and t.createtime like '${createtime}%'`;
     count += ` ` + `and createtime like '${createtime}%'`;
@@ -72,9 +85,10 @@ router.get("/bookkeep", async (ctx) => {
 });
 // 修改
 router.put("/updateBookkeep", async (ctx) => {
-  let { id, typeid, methodid, content, createtime, amount } = ctx.request.body;
+  let { id, typeid, methodid, iscost, content, createtime, amount } =
+    ctx.request.body;
   try {
-    let sql = `update bookkeep set typeid = '${typeid}', methodid = '${methodid}', content = '${content}', createtime = '${createtime}', amount = '${amount}' where id = '${id}'`;
+    let sql = `update bookkeep set typeid = '${typeid}', methodid = '${methodid}', iscost = ${iscost}, content = '${content}', createtime = '${createtime}', amount = '${amount}' where id = '${id}'`;
     let data = await db.query(sql);
     ctx.body = { code: 200, msg: "修改成功", des: "请在列表查看" };
   } catch (error) {

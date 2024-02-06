@@ -1,7 +1,12 @@
 <template>
   <div>
-    <a-card title="支出方式字典" :loading="loading">
-      <a-button type="primary" slot="extra" icon="plus" @click="add"
+    <a-card title="支出/收入方式字典" :loading="loading">
+      <a-button
+        :loading="loading"
+        type="primary"
+        slot="extra"
+        icon="plus"
+        @click="add"
         >新增</a-button
       >
       <a-row type="flex">

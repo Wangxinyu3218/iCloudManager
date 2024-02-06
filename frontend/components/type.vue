@@ -1,7 +1,12 @@
 <template>
   <div>
-    <a-card title="支出类型字典" :loading="loading">
-      <a-button type="primary" slot="extra" icon="plus" @click="add"
+    <a-card title="支出/收入类型字典" :loading="loading">
+      <a-button
+        :loading="loading"
+        type="primary"
+        slot="extra"
+        icon="plus"
+        @click="add"
         >新增</a-button
       >
       <a-row type="flex">
@@ -38,6 +43,8 @@
             v-if="items[index].isdash == '0'"
           />
           {{ item.content }}
+          <a-divider type="vertical" />
+          <span>{{ item.iscost }}</span>
         </a-card>
       </a-row>
     </a-card>
@@ -59,8 +66,15 @@
         ref="ruleForm"
       >
         <a-form-model-item ref="content" label="名称" prop="content"
-          ><a-input v-model="form.content" :maxLength="10" /></a-form-model-item
-      ></a-form-model>
+          ><a-input v-model="form.content" :maxLength="10"
+        /></a-form-model-item>
+        <a-form-model-item label="分类" prop="iscost">
+          <a-select v-model="form.iscost" placeholder="请选择分类">
+            <a-select-option value="0"> 支出 </a-select-option>
+            <a-select-option value="1"> 收入 </a-select-option>
+          </a-select>
+        </a-form-model-item></a-form-model
+      >
     </a-modal>
     <a-modal
       title="增加"
@@ -80,8 +94,15 @@
         ref="ruleForm"
       >
         <a-form-model-item ref="content" label="名称" prop="content"
-          ><a-input v-model="form.content" :maxLength="10" /></a-form-model-item
-      ></a-form-model>
+          ><a-input v-model="form.content" :maxLength="10"
+        /></a-form-model-item>
+        <a-form-model-item label="分类" prop="iscost">
+          <a-select v-model="form.iscost" placeholder="请选择分类">
+            <a-select-option value="0"> 支出 </a-select-option>
+            <a-select-option value="1"> 收入 </a-select-option>
+          </a-select>
+        </a-form-model-item></a-form-model
+      >
     </a-modal>
   </div>
 </template>
@@ -97,6 +118,10 @@ export default {
       form: {},
       labelCol: { span: 4 },
       wrapperCol: { span: 18 },
+      options: [
+        { value: 0, label: "支出" },
+        { value: 1, label: "收入" },
+      ],
       rules: {
         content: [
           {
@@ -109,6 +134,13 @@ export default {
             max: 10,
             message: "在1～10位之间",
             trigger: "blur",
+          },
+        ],
+        iscost: [
+          {
+            required: true,
+            message: "请选择分类",
+            trigger: "change",
           },
         ],
       },
@@ -126,6 +158,13 @@ export default {
             `type/listType?uuid=${this.$store.state.uuid}&roleid=${this.$store.state.roleid}`
           );
           this.items = response.data.list;
+          for (var i = 0; i <= response.data.list.length; i++) {
+            if (response.data.list[i].iscost === 0) {
+              this.items[i].iscost = "支出";
+            } else if (response.data.list[i].iscost === 1) {
+              this.items[i].iscost = "收入";
+            }
+          }
           this.loading = false;
         } catch (error) {
           this.loading = false;
@@ -137,6 +176,11 @@ export default {
       this.form = {};
       const selectedItem = this.items[index];
       this.form = selectedItem;
+      if (selectedItem.iscost === 0) {
+        this.form.iscost = "支出";
+      } else if (selectedItem.iscost === 1) {
+        this.form.iscost = "收入";
+      }
       this.visible = true;
     },
     async confirm(index) {
@@ -168,62 +212,89 @@ export default {
     },
     cancel() {},
     update() {
-      const loading = this.$loading({
-        lock: true,
-        text: "通信中",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
-      setTimeout(async () => {
+      this.$refs.ruleForm.validate((valid) => {
         try {
-          const uuid = this.form.uuid;
-          const roleid = this.form.roleid;
-          const typeid = this.form.typeid;
-          const content = this.form.content;
-          const response = await this.$axios.get(
-            `type/updateType?uuid=${uuid}&roleid=${roleid}&typeid=${typeid}&content=${content}`
-          );
-          this.getList();
-          this.$notification.open({
-            message: response.data.msg,
-            duration: 4,
-          });
-          loading.close();
-          this.visible = false;
+          if (valid) {
+            const loading = this.$loading({
+              lock: true,
+              text: "通信中",
+              spinner: "el-icon-loading",
+              background: "rgba(0, 0, 0, 0.7)",
+            });
+            setTimeout(async () => {
+              try {
+                const uuid = this.form.uuid;
+                const roleid = this.form.roleid;
+                const typeid = this.form.typeid;
+                const content = this.form.content;
+                const response = await this.$axios.get(
+                  `type/updateType?uuid=${uuid}&roleid=${roleid}&typeid=${typeid}&content=${content}`
+                );
+                this.getList();
+                this.$notification.open({
+                  message: response.data.msg,
+                  duration: 4,
+                });
+                loading.close();
+                this.visible = false;
+              } catch (error) {
+                loading.close();
+                this.visible = false;
+              }
+            }, 1300);
+            //   loading.close();}
+          }
         } catch (error) {
-          loading.close();
-          this.visible = false;
+          this.$notification.open({
+            message: "错误",
+            description: "未知错误",
+            duration: 8,
+          });
+          return false;
         }
-      }, 1300);
-      //   loading.close();
+      });
     },
     insert() {
-      const loading = this.$loading({
-        lock: true,
-        text: "通信中",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
-      setTimeout(async () => {
+      this.$refs.ruleForm.validate((valid) => {
         try {
-          const uuid = this.$store.state.uuid;
-          const roleid = this.$store.state.roleid;
-          const content = this.form.content;
-          const response = await this.$axios.get(
-            `type/addType?uuid=${uuid}&roleid=${roleid}&content=${content}`
-          );
-          this.getList();
-          this.$notification.open({
-            message: response.data.msg,
-            duration: 4,
-          });
-          loading.close();
-          this.avisible = false;
+          if (valid) {
+            const loading = this.$loading({
+              lock: true,
+              text: "通信中",
+              spinner: "el-icon-loading",
+              background: "rgba(0, 0, 0, 0.7)",
+            });
+            setTimeout(async () => {
+              try {
+                const uuid = this.$store.state.uuid;
+                const roleid = this.$store.state.roleid;
+                const content = this.form.content;
+                const iscost = this.form.iscost;
+                const response = await this.$axios.get(
+                  `type/addType?uuid=${uuid}&roleid=${roleid}&content=${content}&iscost=${iscost}`
+                );
+                this.getList();
+                this.$notification.open({
+                  message: response.data.msg,
+                  duration: 4,
+                });
+                loading.close();
+                this.avisible = false;
+              } catch (error) {
+                loading.close();
+                this.avisible = false;
+              }
+            }, 1300);
+          }
         } catch (error) {
-          loading.close();
-          this.avisible = false;
+          this.$notification.open({
+            message: "错误",
+            description: "未知错误",
+            duration: 8,
+          });
+          return false;
         }
-      }, 1300);
+      });
     },
     handleCancel() {
       this.visible = false;

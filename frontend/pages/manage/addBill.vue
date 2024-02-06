@@ -11,6 +11,12 @@
       <a-form-model-item label="备注" prop="content">
         <a-input v-model="mform.content" placeholder="请输入备注" />
       </a-form-model-item>
+      <a-form-model-item label="分类" prop="iscost">
+        <a-select v-model="mform.iscost" placeholder="请选择分类">
+          <a-select-option value="0"> 支出 </a-select-option>
+          <a-select-option value="1"> 收入 </a-select-option>
+        </a-select>
+      </a-form-model-item>
       <a-form-model-item label="支出类型" prop="typeid">
         <a-select v-model="mform.typeid" placeholder="请选择支出类型">
           <a-select-option
@@ -68,6 +74,7 @@ export default {
       mform: {
         uuid: null,
         roleid: null,
+        iscost: null,
         typeid: null,
         methodid: null,
         content: null,
@@ -80,6 +87,13 @@ export default {
             required: true,
             message: "请输入备注",
             trigger: "blur",
+          },
+        ],
+        iscost: [
+          {
+            required: true,
+            message: "请选择分类",
+            trigger: "change",
           },
         ],
         typeid: [
