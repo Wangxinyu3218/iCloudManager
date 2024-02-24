@@ -1,9 +1,9 @@
 <!--
  * @Author: ZhangXiaolu
  * @Date: 2022-11-03 10:12:38
- * @LastEditTime: 2022-07-29 10:12:38
+ * @LastEditTime: 2024-02-24 15:39:38
  * @LastEditors: ZhangXiaolu
- * @FilePath: personal-workstation\README.md
+ * @FilePath: iCloudManager\README.md
 -->
 
 ~~# PWMS_PC~~
@@ -76,7 +76,7 @@ Enhance：代码重构或优化或格式化等
 如有更好的建议或不懂的需要解释，请私信即可
 
 ## 5、系统初始流程图
-![process](assets/V5_20240101/process.jpeg)
+![process.jpeg](https://s2.loli.net/2024/02/24/2rLaVfnEtUcO4Hj.png)
 
 ## 6、开发日志
 
@@ -86,15 +86,15 @@ V5_20240101：
 新版本增加了系统配置，可以为用户配置角色，角色分配菜单等
 ```
 
-![login](assets/V5_20240101/login.jpeg)
-![homePage](assets/V5_20240101/homePage.jpeg)
-![bookkeep](assets/V5_20240101/bookkeep.jpeg)
-![addBook](assets/V5_20240101/addBook.jpeg)
-![calender](assets/V5_20240101/calender.jpeg)
-![dict](assets/V5_20240101/dict.jpeg)
-![menu](assets/V5_20240101/menu.jpeg)
-![role](assets/V5_20240101/role.jpeg)
-![user](assets/V5_20240101/user.jpeg)
+![login.jpeg](https://s2.loli.net/2024/02/24/r3pYNHl5JCWVSuh.png)
+![homePage.jpeg](https://s2.loli.net/2024/02/24/7PbpvuSTAgFMkoD.jpg)
+![bookkeep.jpeg](https://s2.loli.net/2024/02/24/veNwicyZz1jAbJL.jpg)
+![addBook.jpeg](https://s2.loli.net/2024/02/24/68peYNrJo4fVzvZ.jpg)
+![calender.jpeg](https://s2.loli.net/2024/02/24/74lJTCjGhpv9egA.jpg)
+![dict.jpeg](https://s2.loli.net/2024/02/24/nI4hJHlqFtS5CXi.jpg)
+![menu.jpeg](https://s2.loli.net/2024/02/24/C4fERjNWLoQD7Fi.png)
+![role.jpeg](https://s2.loli.net/2024/02/24/Kg3xRiODlAP8hWf.png)
+![user.jpeg](https://s2.loli.net/2024/02/24/CmkXRLSlgnjFz4E.png)
 
 ```
 V4_20230712：
@@ -102,8 +102,8 @@ V4_20230712：
 2.[+]新增了日程功能 可以在日历上添加日程了
 ```
 
-![homePage](assets/V4_20230712/homePage.jpeg)
-![calendar](assets/V4_20230712/calendar.jpeg)
+![homePage.jpeg](https://s2.loli.net/2024/02/24/R8n3TZ5SLjb6M2x.jpg)
+![calendar.jpeg](https://s2.loli.net/2024/02/24/DwormMbTlp9RjLI.jpg)
 
 ```
 V3_20230506：
@@ -115,12 +115,12 @@ V3_20230506：
 5.[+]可以退出登录了
 ```
 
-![login](assets/V3_20230506/login.jpeg)
-![dashboard](assets/V3_20230506/dashboard.jpeg)
-![bookkeeping](assets/V3_20230506/bookkeeping.jpeg)
-![dict](assets/V3_20230506/dict.jpeg)
-![user](assets/V3_20230506/user.jpeg)
-![logout](assets/V3_20230506/logout.jpeg)
+![user.jpeg](https://s2.loli.net/2024/02/24/ORfcC7IPylp6qwe.jpg)
+![logout.jpeg](https://s2.loli.net/2024/02/24/4lpuaOfh76kYy3K.jpg)
+![bookkeeping.jpeg](https://s2.loli.net/2024/02/24/4BOiNZLu6gwHVfI.jpg)
+![dict.jpeg](https://s2.loli.net/2024/02/24/bhyJMi9LmIvcPaR.jpg)
+![user.jpeg](https://s2.loli.net/2024/02/24/ORfcC7IPylp6qwe.jpg)
+![logout.jpeg](https://s2.loli.net/2024/02/24/4lpuaOfh76kYy3K.jpg)
 
 ```
 V2_20230406：
@@ -129,8 +129,8 @@ V2_20230406：
 3.[+]新增了字典配置
 ```
 
-![homePage](assets/V2_20230406/homePage.jpeg)
-![list](assets/V2_20230406/dict.jpeg)
+![homePage.jpeg](https://s2.loli.net/2024/02/24/SXvFJRUBPglAeis.jpg)
+![dict.jpeg](https://s2.loli.net/2024/02/24/OcfMNIyQ2mJnH5D.jpg)
 
 ```
 V1_20220323：
@@ -139,7 +139,7 @@ V1_20220323：
 3.[+]登录
 ```
 
-![login](assets/V1_20220323/login.jpeg)
-![homePage](assets/V1_20220323/homePage.jpeg)
-![list](assets/V1_20220323/list.jpeg)
-![details](assets/V1_20220323/details.jpeg)
+![login.jpeg](https://s2.loli.net/2024/02/24/EXC2sviIk8GjWor.jpg)
+![homePage.jpeg](https://s2.loli.net/2024/02/24/iXU9F1RH8uOEWSq.jpg)
+![list.jpeg](https://s2.loli.net/2024/02/24/2EYN31BpVkxhKU6.jpg)
+![details.jpeg](https://s2.loli.net/2024/02/24/M1DyPwdbgKukCXE.jpg)
